@@ -85,6 +85,8 @@
 		button {
 			width: 400px;
 			height: 50px;
+			text-transform: uppercase;
+			font-weight: bold;
 		}
 		
 	</style>
@@ -109,7 +111,7 @@
 		<tr>
 			<td>Function</td>
 			<td>
-					<select id="inputFunction">
+					<select id="inputFunction" onchange="startSimulation()">
 					  <option value="Salomon">Salomon</option>
 					  <option value="Bohachevsky">Bohachevsky</option>
 					  <option value="Griewank">Griewank</option>
@@ -217,7 +219,7 @@
 	
 	function toggleSimulation() {
 		if (!this.simulationIsRunning) {
-			startNewSimulation();
+			startSimulation();
 		} else {
 			stopSimulation();
 		}
@@ -263,7 +265,7 @@
 		for their data, and then creating a new PSO computation object
 		as well as a new PSO plot animation object.
 	*/
-function startNewSimulation() {
+function startSimulation() {
 	// Check if any current simulation is running. If so, end it.
 	if (typeof this.plot !== 'undefined') {
 		this.plot.stopAnimation = true;
