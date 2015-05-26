@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Particle Swarm Optimization Demonstration</title>
+	<script src="d3.js"></script>
+	<script src="pso_standard.js"></script>
+	<script src="pso_plot.js"></script>
+
+	<style>
+
+		svg {
+			outline: black solid thick;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		
+		div.pso_simulation {
+			margin-left: auto;
+			margin-right: auto;
+			margin-top: auto;
+			margin-bottom: auto;
+			vertical-align: middle;
+			height: 525px;
+			width: 1200px;
+		}
+		
+		div.plot_info {
+			background-color: transparent;
+			display: inline-block;
+			margin-left: auto;
+			margin-right: auto;
+			text-align: justify;
+			vertical-align: middle;
+			width: 500px;
+		}
+		
+		div.pso_plot {
+			width: 525px;
+			height: 525px;
+			background-color: transparent;
+			display: inline-block;
+			float: left;
+			margin-left: auto;
+			margin-right: auto;
+			vertical-align: middle;
+		}
+
+		p {
+			text-transform: uppercase;
+		}
+		
+		span {
+			font-size: 1.5em;
+		}
+		
+		img#outputPlotImage {
+			width: 200px;
+			height: 200px;
+		}
+		
+	</style>
+</head>
+
+<body>
+
+<div class="pso_simulation">
+	<div class="pso_plot">
+		<svg id="plot" width="500" height="500" onclick="plot.toggleAnimation()"></svg>
+	</div>
+
+	<div class="plot_info">
+	<table>
+		<tr>
+			<td>Function</td>
+			<td>
+					<select id="inputFunction">
+					  <option value="Salomon">Salomon</option>
+					  <option value="Bohachevsky">Bohachevsky</option>
+					  <option value="Griewank">Griewank</option>
+					  <option value="Michaelwicz">Michaelwicz</option>
+					  <option value="Space">Space</option>
+					  <option value="Soumya">Soumya</option>
+					  <option value="Martin">Martin</option>
+					  <option value="Noise_1">Noise 1</option>
+					  <option value="Noise_2">Noise 2</option>
+					</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Topology</td>
+			<td>
+					<select id="inputTopology">
+					  <option value="Ring">Ring (local best)</option>
+					  <option value="Star">Star (global best)</option>
+					</select>
+			</td>
+		</tr>
+		<tr><td># Neighbors (even #)</td><td><input type="text" id="inputNumNeighbors" value="4"/></td></tr>
+		<tr><td># Particles</td><td><input type="text" id="inputNumParticles" value="20"/></td></tr>
+	<tr><td>Inertial weight</td><td><input type="text" id="inputInertiaWeight" value="0.9"/></td></tr>
+	<tr><td>Social weight</td><td><input type="text" id="inputSocialWeight" value="0.1"/></td></tr>
+	<tr><td>Cognitive weight</td><td><input type="text" id="inputCognitiveWeight" value="0.2"/></td></tr>
+	<tr><td>Iterations per second</td><td><input type="text" id="inputIterationsPerSecond" value="30"/></td></tr>
+	<tr>
+			<td>Stopping condition</td>
+			<td>
+					<select id="inputStoppingCondition">
+					  <option value="none">None</option>
+					  <option value="100">100 iterations</option>
+					  <option value="200">200 iterations</option>
+					  <option value="300">300 iterations</option>
+					  <option value="400">400 iterations</option>
+					  <option value="500">500 iterations</option>
+					</select>
+			</td>
+		</tr>
+	</table>
+	<button onclick="startNewSimulation()">Start Simulation</button>
+	
+	
+		<p>
+			The best position found is: <span id="outputBestPosition"></span>
+		</p>
+		<p>
+			The true global minimum is: <span id="outputTruePosition"></span>
+		</p>
+		
+		<p>
+			Iteration # <span id="outputNumIterations"></span>
+		</p>
+		
+		<img id="outputPlotImage"/>
+		<canvas id="outputPlotImageCanvas" width="200" height="200"> </canvas>
+	</div>
+</div>
+
+
+<div style="clear:both;"></div>
+
+<script>
+	var numIterations = 0;
+	var maxIterations = Infinity;
+	
+	// This is called every iteration of the PSO algorithm
+	function iterationCallback (manager) {
+		var x = manager.bestPosition[0];
+		var y = manager.bestPosition[1];
+		document.getElementById("outputBestPosition").innerHTML
+			= "( " + x.toFixed(3) + ", " + y.toFixed(3) + " )";
+		
+		numIterations++;
+		
+		document.getElementById("outputNumIterations").innerHTML
+			= numIterations;
+			
+		if (numIterations >= maxIterations) {
+			return false;
+		}
+		
+		return true;
+	}
+
+	var simulationIsRunning = false;
+	
+function startNewSimulation() {
+	// Check if any current simulation is running. If so, end it.
+	if (typeof this.plot !== 'undefined') {
+		this.plot.stopAnimation = true;
+	}
+	
+	numIterations = 0;
+	
+	// Convert from PSO scale to Function scale
+	function scale(xPSO, dimension) {
+		//console.log("min = " + dimension.min + ", max = " + dimension.max);
+		//console.log("x_pso = " + xPSO);
+		var functionX = (0.5*dimension.max*(1+xPSO) + 0.5*dimension.min*(1-xPSO));
+		//console.log("x_func = " + functionX);
+		return functionX;
+	}
+	
+		
+	var FF_Salomon = function() {
+	
+		this.dimensions = [ {min: -4, max: 4}, {min: -4, max: 4} ];
+		this.global = {x: 0, y: 0};
+		this.imageSrc = "salomon.png";
+		
+		this.compute = function (x, y) 
+						{
+							//console.log(this.dimensions[0].min);
+							x = scale(x, this.dimensions[0]);
+							y = scale(y, this.dimensions[1]);
+							if ((x >= this.dimensions[0].min) && (x <= this.dimensions[0].max)
+								&& (y >= this.dimensions[1].min) && (y <= this.dimensions[1].max)) 
+							{
+								var r = Math.sqrt(x*x + y*y);
+								var f = 1 - Math.cos(2*Math.PI*r) + 0.1*r;
+								return f;
+							} else {
+								return Infinity;
+							}
+						}
+					.bind(this);
+	};
+	
+	var FF_Bohachevsky = function() {
+	
+		this.dimensions = [ {min: -2, max: 2}, {min: -2, max: 2} ];
+		this.global = {x: 0, y: 0};
+		this.imageSrc = "bohachevsky.png";
+
+		
+		this.compute = function (x, y) 
+						{
+							//console.log(this.dimensions[0].min);
+							x = scale(x, this.dimensions[0]);
+							y = scale(y, this.dimensions[1]);
+							if ((x >= this.dimensions[0].min) && (x <= this.dimensions[0].max)
+								&& (y >= this.dimensions[1].min) && (y <= this.dimensions[1].max)) 
+							{
+								var f = x*x + 2 *y*y - 0.3*Math.cos(2*Math.PI*x) - 0.4*Math.cos(4*Math.PI*y) + 0.7;
+
+								return f;
+							} else {
+								return Infinity;
+							}
+						}
+					.bind(this);
+	};
+	
+	var FF_Griewank = function() {
+	
+		this.dimensions = [ {min: -40, max: 40}, {min: -40, max: 40} ];
+		this.global = {x: 0, y: 0};
+		this.imageSrc = "griewank.png";
+
+
+		this.compute = function (x, y) {
+			x = scale(x, this.dimensions[0]);
+			y = scale(y, this.dimensions[1]);
+			if ((x >= this.dimensions[0].min) && (x <= this.dimensions[0].max)
+				&& (y >= this.dimensions[1].min) && (y <= this.dimensions[1].max)) 
+			{
+				var f = 1 + ((1/4000)*(x*x+y*y))-(Math.cos(x)*Math.cos(y/Math.sqrt(2)));
+				
+				return f;
+			} else {
+				return Infinity;
+			}
+		}.bind(this);
+	};
+	
+	var FF_Michaelwicz = function() {
+	
+		this.dimensions = [ {min: 0, max: 4}, {min: 0, max: 4} ];
+		this.global = {x: 2.20319, y: 1.57049};
+		this.imageSrc = "michaelwicz.png";
+		
+		this.compute = function (x, y) {
+			x = scale(x, this.dimensions[0]);
+			y = scale(y, this.dimensions[1]);
+			if ((x >= this.dimensions[0].min) && (x <= this.dimensions[0].max)
+				&& (y >= this.dimensions[1].min) && (y <= this.dimensions[1].max)) 
+			{
+				var a = Math.sin(x*x / Math.PI);
+				var b = Math.sin(2*y*y / Math.PI);
+				var a20 = 1;
+				var b20 = 1;
+				for (var i = 0; i < 20; i++) {
+					a20 *= a;
+					b20 *= b;
+				}
+				var f = -Math.sin(x)*a20 - Math.sin(y)*b20;
+				
+				return f;
+			} else {
+				return Infinity;
+			}
+		}.bind(this);
+	};
+	
+	var FF_Picture = function(filename) 
+	{
+		this.imageSrc = filename;
+		
+		this.myImg = new Image();
+		this.myImg.src = filename;
+		this.context = document.getElementById('outputPlotImageCanvas').getContext('2d');
+		this.context.drawImage(this.myImg, 0, 0);
+		//this.context.scale(1, -1);
+		
+		var w = 200;
+		var h = 200;
+		this.dimensions = [ {min: 0, max: w}, {min: 0, max: h} ];
+		this.global = {x: 0, y: 0};
+		
+		this.compute = function (x, y) 
+						{
+							x = scale(x, this.dimensions[0]);
+							y = scale(y, this.dimensions[1]);
+							//console.log(this.dimensions[0].max);
+							if ((x >= this.dimensions[0].min) && (x <= this.dimensions[0].max)
+								&& (y >= this.dimensions[1].min) && (y <= this.dimensions[1].max)) 
+							{
+								var sample_x = x;
+								var sample_y = this.dimensions[1].max - y;
+								// Returns an ImageData object that copies the pixel data for the specified rectangle on a canvas
+								var pixelData = this.context.getImageData(Math.floor(sample_x), Math.floor(sample_y), 1, 1).data;
+								var f = 255 - (pixelData[0] + pixelData[1] + pixelData[2]);
+								console.log(f);
+								return f;
+							} else {
+								return Infinity;
+							}
+						}.bind(this);
+	};
+	
+	console.log(this.imageSrc);
+	
+	switch (document.getElementById("inputFunction").value) {
+		case "Salomon":
+			this.ff = new FF_Salomon;
+			break;
+		case "Bohachevsky": 
+  			this.ff = new FF_Bohachevsky;
+  			break;
+		case "Griewank":
+			this.ff = new FF_Griewank;
+			break;
+		case "Michaelwicz":
+			this.ff = new FF_Michaelwicz;
+			break;
+		case "Space":
+			this.ff = new FF_Picture("space.jpg");
+			break;
+		case "Soumya":
+			this.ff = new FF_Picture("soumya_small.jpg");
+			break;
+		case "Martin":
+			this.ff = new FF_Picture("martin_small.jpg");
+			break;
+		case "Noise_1":
+			this.ff = new FF_Picture("noise_1.jpg");
+			break;
+		case "Noise_2":
+			this.ff = new FF_Picture("noise_2.jpg");
+			break;
+		default:
+			console.assert(false);
+	}
+	
+	document.getElementById("outputPlotImage").setAttribute("src",ff.imageSrc);
+
+	document.getElementById("outputTruePosition").innerHTML = "( " + ff.global.x.toFixed(3) + ", " + ff.global.y.toFixed(3) + " )";
+	var ips = parseFloat(document.getElementById("inputIterationsPerSecond").value);
+	var numParticles = parseFloat(document.getElementById("inputNumParticles").value);
+	
+	this.manager = new PSO.Manager( this.ff, numParticles );
+	this.manager.inertiaWeight = parseFloat(document.getElementById("inputInertiaWeight").value);
+	this.manager.socialWeight = parseFloat(document.getElementById("inputSocialWeight").value);
+	this.manager.cognitiveWeight = parseFloat(document.getElementById("inputCognitiveWeight").value);
+	
+	switch (document.getElementById("inputTopology").value) {
+		case "Ring":
+			this.manager.topology = "ring";
+			this.manager.numNeighbors = parseFloat(document.getElementById("inputNumNeighbors").value);
+			break;
+		case "Star":
+			// this should be the manger's default (but set it to be sure)
+			this.manager.topology = "star";
+			this.manager.numNeighbors = parseFloat(this.manager.particles.length);
+			break;
+		default:
+			console.assert(false);
+	}
+	
+	this.plot = new PSOPlot (manager, "plot");
+	this.plot.tickCallbackCallback = iterationCallback;
+	this.plot.iterationsPerSecond = ips;	
+	this.plot.startAnimation();
+	
+	switch (document.getElementById("inputStoppingCondition").value) {
+		case "none":
+			this.maxIterations = Infinity;
+			break;
+		case "100":
+			this.maxIterations = 100;
+			break;
+		case "200":
+			this.maxIterations = 200;
+			break;
+		case "300":
+			this.maxIterations = 300;
+			break;
+		case "400":
+			this.maxIterations = 400;
+			break;
+		case "500":
+			this.maxIterations = 500;
+			break;
+		default:
+			console.log("Invalid stopping condition.");
+		 	console.assert(true);
+		}
+}
+
+</script>
+
+</body>
+
+</html>

@@ -80,8 +80,12 @@ PSO = (function () {
 		console.assert(fitnessFunction.dimensions.length == 2);
 		console.assert(numParticles);
 		console.assert(numParticles > 0);
+		
+		console.log("ff.dim[0].min = " + fitnessFunction.dimensions[0].min);
+		console.log("ff.dim[0].max = " + fitnessFunction.dimensions[0].max);
+
 	
-		this.dimensions = fitnessFunction.dimensions;
+		this.dimensions = [ {min: -1, max: 1}, {min: -1, max: 1} ];
 		this.fitnessFunction = fitnessFunction.compute;
 		
 		this.inertiaWeight = 0.8;
