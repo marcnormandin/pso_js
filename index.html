@@ -64,11 +64,27 @@
 			height: 200px;
 		}
 		
+		.parameterHelpText {
+			font-style: italic;
+			font-weight: lighter;
+		}
+		
+		td {
+			text-align: left;
+		}
+		
 	</style>
 </head>
 
 <body>
+<center>
+<h1>Particle Swarm Optimization:</h1>
+<h2>Demonstration of <a href="https://github.com/marcnormandin/pso_js">pso_js</a> javascript code.</h2>
+<h4>Written by Marc Normandin</h4>
+<hr/>
+</center>
 
+<br/>
 <div class="pso_simulation">
 	<div class="pso_plot">
 		<svg id="plot" width="500" height="500" onclick="plot.toggleAnimation()"></svg>
@@ -86,6 +102,7 @@
 					  <option value="Michaelwicz">Michaelwicz</option>
 					</select>
 			</td>
+			<td class="parameterHelpText">the function to minimize</td>
 		</tr>
 		<tr>
 			<td>Topology</td>
@@ -95,13 +112,36 @@
 					  <option value="Star">Star (global best)</option>
 					</select>
 			</td>
+			<td class="parameterHelpText">how the particles communicate</td>
 		</tr>
-		<tr><td># Neighbors (even #)</td><td><input type="text" id="inputNumNeighbors" value="4"/></td></tr>
-		<tr><td># Particles</td><td><input type="text" id="inputNumParticles" value="20"/></td></tr>
-	<tr><td>Inertial weight</td><td><input type="text" id="inputInertiaWeight" value="0.9"/></td></tr>
-	<tr><td>Social weight</td><td><input type="text" id="inputSocialWeight" value="0.1"/></td></tr>
-	<tr><td>Cognitive weight</td><td><input type="text" id="inputCognitiveWeight" value="0.2"/></td></tr>
-	<tr><td>Iterations per second</td><td><input type="text" id="inputIterationsPerSecond" value="30"/></td></tr>
+		<tr>
+			<td># Neighbors (even #)</td>
+			<td><input type="text" id="inputNumNeighbors" value="4"/></td>
+			<td class="parameterHelpText">how many particles each particle communicates directly with</td>
+		</tr>
+		<tr>
+			<td># Particles</td>
+			<td><input type="text" id="inputNumParticles" value="20"/></td>
+			<td class="parameterHelpText"></td>
+		</tr>
+	<tr>
+		<td>Inertial weight</td>
+		<td><input type="text" id="inputInertiaWeight" value="0.9"/></td>
+		<td class="parameterHelpText">how much a particle maintains its previous velocity</td>
+	</tr>
+	<tr>
+		<td>Social weight</td>
+		<td><input type="text" id="inputSocialWeight" value="0.1"/></td>
+		<td class="parameterHelpText">how much a particle is influenced by its peers</td>
+	</tr>
+	<tr>
+		<td>Cognitive weight</td>
+		<td><input type="text" id="inputCognitiveWeight" value="0.2"/></td>
+		<td class="parameterHelpText">how much a particle is influenced by its memory</td>
+	</tr>
+	<tr>
+		<td>Iterations per second</td>
+		<td><input type="text" id="inputIterationsPerSecond" value="30"/></td></tr>
 	<tr>
 			<td>Stopping condition</td>
 			<td>
@@ -139,14 +179,19 @@
 
 <div style="clear:both;"></div>
 
+<center>
 <hr/>
 
+<h3>A three-dimensional plot of the function being minimized.</h3>
 <img id="outputPlotImageThreeD"/>
 
 <hr/>
 
+<h3>A two-contour plot of the function being minimized.</h3>
 <img id="outputPlotImageContour"/>
-
+<hr/>
+<h4>Written by Marc Normandin, 2015.</h4>
+</center>
 
 		
 <script>
