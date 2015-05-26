@@ -51,40 +51,30 @@ PSO = (function () {
 		var socialBestPosition = manager.getSocialBest(this);
 		
 		// Update the position
-		for (var i = 0; i < manager.dimensions.length; i++) {			
-			
-	
-			var vMomentum = manager.inertiaWeight * this.velocity[i];
-			//var vMomentum = this.velocity[i];
+		for (var i = 0; i < manager.dimensions.length; i++) 
+		{	
+			var vMomentum = manager.inertiaWeight * this.velocity[i];			
 			
 			var d1 = this.bestPosition[i] - this.position[i];
-			//var vCognitive = manager.cognitiveWeight * 1 * d1;
 			var vCognitive = manager.cognitiveWeight * random(0,1) * d1;
-
 
 			var d2 = socialBestPosition[i] - this.position[i];
 			var vSocial = manager.socialWeight * random(0,1) * d2;
-			//var vSocial = manager.socialWeight * 1 * d2;
 
-			
 			this.velocity[i] = vMomentum + vCognitive + vSocial;
 			this.position[i] = this.position[i] + this.velocity[i];
-			
-			//console.log("m = " + vMomentum + ", c = " + vCognitive + ", s = " + vSocial);
 		}
 	};
 
 	// Manager class
-	var Manager = function (fitnessFunction, numParticles) {
+	// Maintains a list of particles
+	var Manager = function (fitnessFunction, numParticles) 
+	{
 		console.assert(fitnessFunction.dimensions);
 		console.assert(fitnessFunction.dimensions.length == 2);
 		console.assert(numParticles);
 		console.assert(numParticles > 0);
 		
-		console.log("ff.dim[0].min = " + fitnessFunction.dimensions[0].min);
-		console.log("ff.dim[0].max = " + fitnessFunction.dimensions[0].max);
-
-	
 		this.dimensions = [ {min: -1, max: 1}, {min: -1, max: 1} ];
 		this.fitnessFunction = fitnessFunction.compute;
 		
@@ -101,6 +91,7 @@ PSO = (function () {
 		this.updateGlobalBest();
 		
 		// By default uses global best
+		// This number must be even-valued
 		this.numNeighbors = this.particles.length;
 		
 		//this.availableTopologies = ["ring", "star"];
@@ -152,7 +143,11 @@ PSO = (function () {
 	}
 	
 	// Ring topology
-	Manager.prototype.getSocialBest_Ring = function(particle) {
+	Manager.prototype.getSocialBest_Ring = function(particle) 
+	{
+		// Returns a valid index into an array.
+		// Wraps around values outside the valid range.
+		// e.g. -1 is mapped to the array length - 1
 		function fix(id, arrayLength) {
 			if (id < 0) {
 				// id is negative, so add it instead of subtracting
@@ -164,31 +159,27 @@ PSO = (function () {
 			return id;
 		}
 		
-		// number of neighbors
+		// Number of neighbors
 		var k = this.numNeighbors;
 		console.assert(k%2 == 0); // must be even
 		var kh = k / 2; // half of the neighbors per left/right side
 		console.assert(this.particles.length >= k+1);
 		
+		// Create a list of particle ids for the current particles neighbors
+		// (wrap around the index if too low or too high)
 		var neighborIds = [];
 		for (var i = 0; i < k+1; i++) {
 			var uid = particle.id - kh + i;
 			var fid = fix (uid, this.particles.length);
 			neighborIds.push ( fid );
 		}
-		
-		//console.log(neighborIds);
-		
+				
 		// find the best fitness among the neighbors
 		var lbFitness = this.particles[ neighborIds[0] ].bestFitness;
 		var lbId = 0;
-		
-		//console.log("lbFitness = " + lbFitness);
-		//console.log("lbId = " + lbId);
 		for (var i = 1; i < neighborIds.length; i++) {
 			if (this.particles[ neighborIds[i] ].bestFitness < lbFitness) {
 				lbId = neighborIds[i];
-				//console.log("lbId = " + lbId);
 
 				lbFitness = this.particles[ lbId ].bestFitness;
 			}
@@ -206,18 +197,6 @@ PSO = (function () {
 	Manager.prototype.collisionCallback = function () {
 		this.numCollisions++;
 	};
-	
-// 	Manager.prototype.fitnessFunction = function (x, y) {
-// 		//var x = particle.position[0];
-// 		//var y = particle.position[1];
-// 		if ((x >= this.dimensions[0].min) && (x <= this.dimensions[0].max)
-// 			&& (y >= this.dimensions[1].min) && (y <= this.dimensions[1].max)) {
-// 			var f = x*x + 2 *y*y - 0.3*Math.cos(2*Math.PI*x) - 0.4*Math.cos(4*Math.PI*y) + 0.7;
-// 			return f;
-// 		} else {
-// 			return Infinity;
-// 		}
-// 	};
 	
  	return {
 		Manager : Manager

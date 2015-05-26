@@ -18,9 +18,6 @@ function PSOPlot (manager, idTag)
 	this.sampleNumPerHeight = this.sampleNumPerWidth;
 	
 	this.sampleFitnessFunction();
-
-	// Render one frame so that particles are seen
-	//this.renderParticles( this.manager.particles );
 };
 
 PSOPlot.prototype.tickCallbackCallback = function (manager) {
@@ -44,9 +41,6 @@ PSOPlot.prototype.sampleFitnessFunction = function () {
 		
 	this.Rwpixel = scaleX(Rw) - scaleX(0);
 	this.Rhpixel = scaleY(Rh) - scaleY(0);
-
-	//console.log("rwpixel = " + this.Rwpixel);
-	//console.log("rhpixel = " + this.Rhpixel);
 	
 	this.fitnessFunctionSamples = [];
 	
@@ -59,7 +53,6 @@ PSOPlot.prototype.sampleFitnessFunction = function () {
 			var sample_y = rh - Rh/2;
 			
 			var sample_value = this.manager.fitnessFunction( sample_x, sample_y );
-			//console.log("x = " + sample_x + ", y = " + sample_y + ", value = " + sample_value);
 			
 			this.fitnessFunctionSamples.push( {x: rw, y: rh, value: sample_value} );
 		}
@@ -112,6 +105,10 @@ PSOPlot.prototype.tickCallback = function (elapsedTime) {
 	this.lastTime = elapsedTime;
 };
 
+/*
+	This renders each of the particles.
+	The best particle is coloured green. (This should be set by a style file.)
+*/
 PSOPlot.prototype.renderParticles = function() {
 	var scaleX = d3.scale.linear()
 		.domain([this.manager.dimensions[0].min, this.manager.dimensions[0].max])
@@ -154,7 +151,10 @@ PSOPlot.prototype.renderParticles = function() {
 	circles.exit().remove();
 };
 
-
+/*
+	This renders rectangles at the places of the sampled fitness function.
+	This is shown as the background behind the particles.
+*/
 PSOPlot.prototype.renderFitnessFunction = function() {
 	var scaleX = d3.scale.linear()
 		.domain([this.manager.dimensions[0].min, this.manager.dimensions[0].max])
@@ -164,12 +164,10 @@ PSOPlot.prototype.renderFitnessFunction = function() {
 		.domain([this.manager.dimensions[1].min, this.manager.dimensions[1].max])
 		.range([this.graph_height, 0]);
 
+	// scale the colour
 	var scaleValue = d3.scale.linear()
 		.domain(d3.extent(this.fitnessFunctionSamples, function(s) { return s["value"]; }))
 		.range([255, 0]);
-	//var scaleValue = d3.scale.category20c()
-	//	.domain(d3.extent(this.fitnessFunctionSamples, function(s) { return s["value"]; }));
-		
     
 	// Bind the data
 	var rects = this.svg.selectAll("rect").data(this.fitnessFunctionSamples);
@@ -183,22 +181,17 @@ PSOPlot.prototype.renderFitnessFunction = function() {
 	// Update
 	rects
 		.attr("x", function(sample) {
-			//console.log("rect x = " + sample["x"]);
 			return scaleX(sample["x"]);
 			})
 		.attr("y", function(sample) {
-			//console.log("rect y = " + sample["y"]);
 			var y = scaleY(sample["y"]);
 			
 			return y;
 			})
 		.attr("fill",function(sample) { 
 			var c = Math.floor(scaleValue(sample["value"]));
-			//var c = 24;
 			var col = "rgb("+c+","+c+","+c+")";
 			return col;
-			//console.log("col = " + col);
-				//return scaleValue(sample["value"]); 
 			});
 		
 	// Exit

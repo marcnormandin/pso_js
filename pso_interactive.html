@@ -80,8 +80,6 @@
 					  <option value="Griewank">Griewank</option>
 					  <option value="Michaelwicz">Michaelwicz</option>
 					  <option value="Space">Space</option>
-					  <option value="Soumya">Soumya</option>
-					  <option value="Martin">Martin</option>
 					  <option value="Noise_1">Noise 1</option>
 					  <option value="Noise_2">Noise 2</option>
 					</select>
@@ -163,6 +161,13 @@
 
 	var simulationIsRunning = false;
 	
+	/*
+		This is the main function in this HTML file.
+		
+		It begins a new simulation by querying the input elements
+		for their data, and then creating a new PSO computation object
+		as well as a new PSO plot animation object.
+	*/
 function startNewSimulation() {
 	// Check if any current simulation is running. If so, end it.
 	if (typeof this.plot !== 'undefined') {
@@ -173,14 +178,10 @@ function startNewSimulation() {
 	
 	// Convert from PSO scale to Function scale
 	function scale(xPSO, dimension) {
-		//console.log("min = " + dimension.min + ", max = " + dimension.max);
-		//console.log("x_pso = " + xPSO);
 		var functionX = (0.5*dimension.max*(1+xPSO) + 0.5*dimension.min*(1-xPSO));
-		//console.log("x_func = " + functionX);
 		return functionX;
 	}
 	
-		
 	var FF_Salomon = function() {
 	
 		this.dimensions = [ {min: -4, max: 4}, {min: -4, max: 4} ];
@@ -236,7 +237,6 @@ function startNewSimulation() {
 		this.global = {x: 0, y: 0};
 		this.imageSrc = "griewank.png";
 
-
 		this.compute = function (x, y) {
 			x = scale(x, this.dimensions[0]);
 			y = scale(y, this.dimensions[1]);
@@ -281,6 +281,13 @@ function startNewSimulation() {
 		}.bind(this);
 	};
 	
+	/*
+		This Fitness Function uses an image (translated to grey-scale) as the fitness function values.
+		It assumes fixed 200x200 pixel images.
+		
+		It works by rendering an image to a 'canvas', and then querying that canvas for the pixel values.
+		The downside is that the canvas is rendered, when not needed.
+	*/
 	var FF_Picture = function(filename) 
 	{
 		this.imageSrc = filename;
@@ -289,11 +296,13 @@ function startNewSimulation() {
 		this.myImg.src = filename;
 		this.context = document.getElementById('outputPlotImageCanvas').getContext('2d');
 		this.context.drawImage(this.myImg, 0, 0);
-		//this.context.scale(1, -1);
 		
+		// Pictures are assumed to be 200x200 pixels		
 		var w = 200;
 		var h = 200;
 		this.dimensions = [ {min: 0, max: w}, {min: 0, max: h} ];
+		
+		// This doesn't make sense, but required by the display code.
 		this.global = {x: 0, y: 0};
 		
 		this.compute = function (x, y) 
@@ -309,7 +318,7 @@ function startNewSimulation() {
 								// Returns an ImageData object that copies the pixel data for the specified rectangle on a canvas
 								var pixelData = this.context.getImageData(Math.floor(sample_x), Math.floor(sample_y), 1, 1).data;
 								var f = 255 - (pixelData[0] + pixelData[1] + pixelData[2]);
-								console.log(f);
+								
 								return f;
 							} else {
 								return Infinity;
@@ -317,8 +326,7 @@ function startNewSimulation() {
 						}.bind(this);
 	};
 	
-	console.log(this.imageSrc);
-	
+	// Load the user chosen fitness function
 	switch (document.getElementById("inputFunction").value) {
 		case "Salomon":
 			this.ff = new FF_Salomon;
@@ -334,12 +342,6 @@ function startNewSimulation() {
 			break;
 		case "Space":
 			this.ff = new FF_Picture("space.jpg");
-			break;
-		case "Soumya":
-			this.ff = new FF_Picture("soumya_small.jpg");
-			break;
-		case "Martin":
-			this.ff = new FF_Picture("martin_small.jpg");
 			break;
 		case "Noise_1":
 			this.ff = new FF_Picture("noise_1.jpg");
@@ -357,6 +359,7 @@ function startNewSimulation() {
 	var ips = parseFloat(document.getElementById("inputIterationsPerSecond").value);
 	var numParticles = parseFloat(document.getElementById("inputNumParticles").value);
 	
+	// Create the main PSO computation object
 	this.manager = new PSO.Manager( this.ff, numParticles );
 	this.manager.inertiaWeight = parseFloat(document.getElementById("inputInertiaWeight").value);
 	this.manager.socialWeight = parseFloat(document.getElementById("inputSocialWeight").value);
@@ -376,11 +379,13 @@ function startNewSimulation() {
 			console.assert(false);
 	}
 	
+	// Create the PSO plot animator object
 	this.plot = new PSOPlot (manager, "plot");
 	this.plot.tickCallbackCallback = iterationCallback;
 	this.plot.iterationsPerSecond = ips;	
 	this.plot.startAnimation();
 	
+	// Set the animation and computation stopping condition
 	switch (document.getElementById("inputStoppingCondition").value) {
 		case "none":
 			this.maxIterations = Infinity;
