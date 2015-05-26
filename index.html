@@ -32,7 +32,7 @@
 			margin-right: auto;
 			text-align: justify;
 			vertical-align: middle;
-			width: 500px;
+			width: 600px;
 		}
 		
 		div.pso_plot {
@@ -44,6 +44,11 @@
 			margin-left: auto;
 			margin-right: auto;
 			vertical-align: middle;
+		}
+		
+		#outputPlotImageContour, #outputPlotImageThreeD {
+			width: 800px;
+			height: 600px;
 		}
 
 		p {
@@ -125,7 +130,8 @@
 			Iteration # <span id="outputNumIterations"></span>
 		</p>
 		
-		<img id="outputPlotImage"/>
+		
+
 		<canvas id="outputPlotImageCanvas" width="200" height="200"> </canvas>
 	</div>
 </div>
@@ -133,6 +139,16 @@
 
 <div style="clear:both;"></div>
 
+<hr/>
+
+<img id="outputPlotImageThreeD"/>
+
+<hr/>
+
+<img id="outputPlotImageContour"/>
+
+
+		
 <script>
 	var numIterations = 0;
 	var maxIterations = Infinity;
@@ -183,7 +199,8 @@ function startNewSimulation() {
 	
 		this.dimensions = [ {min: -4, max: 4}, {min: -4, max: 4} ];
 		this.global = {x: 0, y: 0};
-		this.imageSrc = "";
+		this.imageSrcContour = "http://i.imgur.com/3dg4gAL.jpg";
+		this.imageSrcThreeD = "http://i.imgur.com/KcOFABP.png";
 		
 		this.compute = function (x, y) 
 						{
@@ -207,7 +224,8 @@ function startNewSimulation() {
 	
 		this.dimensions = [ {min: -2, max: 2}, {min: -2, max: 2} ];
 		this.global = {x: 0, y: 0};
-		this.imageSrc = "";
+		this.imageSrcContour = "http://i.imgur.com/phIMicg.png";
+		this.imageSrcThreeD = "http://i.imgur.com/DZj4zdU.png";
 
 		
 		this.compute = function (x, y) 
@@ -232,7 +250,8 @@ function startNewSimulation() {
 	
 		this.dimensions = [ {min: -40, max: 40}, {min: -40, max: 40} ];
 		this.global = {x: 0, y: 0};
-		this.imageSrc = "";
+		this.imageSrcContour = "http://i.imgur.com/vKt5dVe.png";
+		this.imageSrcThreeD = "http://i.imgur.com/auPzgxp.png";
 
 		this.compute = function (x, y) {
 			x = scale(x, this.dimensions[0]);
@@ -253,7 +272,8 @@ function startNewSimulation() {
 	
 		this.dimensions = [ {min: 0, max: 4}, {min: 0, max: 4} ];
 		this.global = {x: 2.20319, y: 1.57049};
-		this.imageSrc = "";
+		this.imageSrcContour = "http://i.imgur.com/aHZ4751.png";
+		this.imageSrcThreeD = "http://i.imgur.com/gNmFkhF.png";
 		
 		this.compute = function (x, y) {
 			x = scale(x, this.dimensions[0]);
@@ -341,7 +361,9 @@ function startNewSimulation() {
 			console.assert(false);
 	}
 	
-	document.getElementById("outputPlotImage").setAttribute("src",ff.imageSrc);
+	document.getElementById("outputPlotImageContour").setAttribute("src",ff.imageSrcContour);
+	document.getElementById("outputPlotImageThreeD").setAttribute("src",ff.imageSrcThreeD);
+
 
 	document.getElementById("outputTruePosition").innerHTML = "( " + ff.global.x.toFixed(3) + ", " + ff.global.y.toFixed(3) + " )";
 	var ips = parseFloat(document.getElementById("inputIterationsPerSecond").value);
