@@ -20,6 +20,12 @@ function PSOPlot (manager, idTag)
 	this.sampleFitnessFunction();
 };
 
+/*
+	This function is called each time the plot animates.
+	
+	It allows for the HTML page, for instance, to query
+	the state of the PSO and display information.
+*/
 PSOPlot.prototype.tickCallbackCallback = function (manager) {
 };
 
