@@ -170,7 +170,7 @@
 			</td>
 	</tr>
 	</table>
-	<button onclick="startNewSimulation()">Start Simulation</button>
+	<button id="toggleSimulationButton" onclick="toggleSimulation()"></button>
 	
 	
 		<p>
@@ -212,6 +212,23 @@
 	var numIterations = 0;
 	var maxIterations = Infinity;
 	
+	// default value
+	this.simulationIsRunning = false;
+	
+	function toggleSimulation() {
+		if (!this.simulationIsRunning) {
+			startNewSimulation();
+		} else {
+			stopSimulation();
+		}
+	}
+	
+	function stopSimulation() {
+		this.simulationIsRunning = false;
+		this.plot.stopAnimation = true;
+		document.getElementById("toggleSimulationButton").innerHTML = "Start Simulation";
+	}
+	
 	// Convert from PSO scale to Function scale
 	function scale(xPSO, dimension) {
 		var functionX = (0.5*dimension.max*(1+xPSO) + 0.5*dimension.min*(1-xPSO));
@@ -237,7 +254,7 @@
 		return true;
 	}
 
-	var simulationIsRunning = false;
+	
 	
 	/*
 		This is the main function in this HTML file.
@@ -457,7 +474,8 @@ function startNewSimulation() {
 	this.plot.startAnimation();
 	
 	// Set the animation and computation stopping condition
-	switch (document.getElementById("inputStoppingCondition").value) {
+	switch (document.getElementById("inputStoppingCondition").value) 
+	{
 		case "none":
 			this.maxIterations = Infinity;
 			break;
@@ -479,9 +497,15 @@ function startNewSimulation() {
 		default:
 			console.log("Invalid stopping condition.");
 		 	console.assert(true);
-		}
+	}
+	
+	this.simulationIsRunning = true;
+	document.getElementById("toggleSimulationButton").innerHTML = "Stop Simulation";
 }
 
+toggleSimulation();
+
+	
 </script>
 
 </body>
