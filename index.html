@@ -198,10 +198,16 @@
 	var numIterations = 0;
 	var maxIterations = Infinity;
 	
+	// Convert from PSO scale to Function scale
+	function scale(xPSO, dimension) {
+		var functionX = (0.5*dimension.max*(1+xPSO) + 0.5*dimension.min*(1-xPSO));
+		return functionX;
+	}
+	
 	// This is called every iteration of the PSO algorithm
 	function iterationCallback (manager) {
-		var x = manager.bestPosition[0];
-		var y = manager.bestPosition[1];
+		var x = scale(manager.bestPosition[0], this.ff.dimensions[0]);
+		var y = scale(manager.bestPosition[1], this.ff.dimensions[1]);
 		document.getElementById("outputBestPosition").innerHTML
 			= "( " + x.toFixed(3) + ", " + y.toFixed(3) + " )";
 		
@@ -234,11 +240,7 @@ function startNewSimulation() {
 	
 	numIterations = 0;
 	
-	// Convert from PSO scale to Function scale
-	function scale(xPSO, dimension) {
-		var functionX = (0.5*dimension.max*(1+xPSO) + 0.5*dimension.min*(1-xPSO));
-		return functionX;
-	}
+	
 	
 	var FF_Salomon = function() {
 	
@@ -436,7 +438,7 @@ function startNewSimulation() {
 	
 	// Create the PSO plot animator object
 	this.plot = new PSOPlot (manager, "plot");
-	this.plot.tickCallbackCallback = iterationCallback;
+	this.plot.tickCallbackCallback = iterationCallback.bind(this);
 	this.plot.iterationsPerSecond = ips;	
 	this.plot.startAnimation();
 	
