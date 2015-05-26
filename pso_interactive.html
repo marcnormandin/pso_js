@@ -79,9 +79,6 @@
 					  <option value="Bohachevsky">Bohachevsky</option>
 					  <option value="Griewank">Griewank</option>
 					  <option value="Michaelwicz">Michaelwicz</option>
-					  <option value="Space">Space</option>
-					  <option value="Noise_1">Noise 1</option>
-					  <option value="Noise_2">Noise 2</option>
 					</select>
 			</td>
 		</tr>
@@ -186,7 +183,7 @@ function startNewSimulation() {
 	
 		this.dimensions = [ {min: -4, max: 4}, {min: -4, max: 4} ];
 		this.global = {x: 0, y: 0};
-		this.imageSrc = "salomon.png";
+		this.imageSrc = "";
 		
 		this.compute = function (x, y) 
 						{
@@ -210,7 +207,7 @@ function startNewSimulation() {
 	
 		this.dimensions = [ {min: -2, max: 2}, {min: -2, max: 2} ];
 		this.global = {x: 0, y: 0};
-		this.imageSrc = "bohachevsky.png";
+		this.imageSrc = "";
 
 		
 		this.compute = function (x, y) 
@@ -235,7 +232,7 @@ function startNewSimulation() {
 	
 		this.dimensions = [ {min: -40, max: 40}, {min: -40, max: 40} ];
 		this.global = {x: 0, y: 0};
-		this.imageSrc = "griewank.png";
+		this.imageSrc = "";
 
 		this.compute = function (x, y) {
 			x = scale(x, this.dimensions[0]);
@@ -256,7 +253,7 @@ function startNewSimulation() {
 	
 		this.dimensions = [ {min: 0, max: 4}, {min: 0, max: 4} ];
 		this.global = {x: 2.20319, y: 1.57049};
-		this.imageSrc = "michaelwicz.png";
+		this.imageSrc = "";
 		
 		this.compute = function (x, y) {
 			x = scale(x, this.dimensions[0]);
@@ -339,15 +336,6 @@ function startNewSimulation() {
 			break;
 		case "Michaelwicz":
 			this.ff = new FF_Michaelwicz;
-			break;
-		case "Space":
-			this.ff = new FF_Picture("space.jpg");
-			break;
-		case "Noise_1":
-			this.ff = new FF_Picture("noise_1.jpg");
-			break;
-		case "Noise_2":
-			this.ff = new FF_Picture("noise_2.jpg");
 			break;
 		default:
 			console.assert(false);
