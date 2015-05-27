@@ -94,8 +94,7 @@ PSO = (function () {
 		// This number must be even-valued
 		this.numNeighbors = this.particles.length;
 		
-		//this.availableTopologies = ["ring", "star"];
-		this.topology = "star";
+		this.topology = "ring";
 	};
 
 	// Adds a particle the set of particles taking
@@ -134,8 +133,8 @@ PSO = (function () {
 			case "ring":
 				return this.getSocialBest_Ring(particle);
 				break;
-			case "star":
-				return this.getSocialBest_Star(particle);
+			case "fully connected":
+				return this.getSocialBest_FullyConnected(particle);
 				break;
 			default:
 				console.assert("Unknown topology");
@@ -190,7 +189,7 @@ PSO = (function () {
 	};
 	
 	// Star (Global best)
-	Manager.prototype.getSocialBest_Star = function(particle) {
+	Manager.prototype.getSocialBest_FullyConnected = function(particle) {
 		return this.bestPosition;
 	}
 	

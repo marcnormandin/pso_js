@@ -125,7 +125,7 @@
 			<td>
 					<select id="inputTopology">
 					  <option value="Ring">Ring (local best)</option>
-					  <option value="Star">Star (global best)</option>
+					  <option value="Fully Connected">Fully Connected (global best)</option>
 					</select>
 			</td>
 			<td class="parameterHelpText">how the particles communicate</td>
@@ -460,9 +460,9 @@ function startSimulation() {
 			this.manager.topology = "ring";
 			this.manager.numNeighbors = parseFloat(document.getElementById("inputNumNeighbors").value);
 			break;
-		case "Star":
+		case "Fully Connected":
 			// this should be the manger's default (but set it to be sure)
-			this.manager.topology = "star";
+			this.manager.topology = "fully connected";
 			this.manager.numNeighbors = parseFloat(this.manager.particles.length);
 			break;
 		default:
