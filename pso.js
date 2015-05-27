@@ -112,6 +112,8 @@ PSO = (function () {
 			this.particles[i].computeFitness(this);
 		}
 		
+		// This should only be for the fully connected topology
+		// this.updateSocialBest()
 		this.updateGlobalBest();
 	};
 	
