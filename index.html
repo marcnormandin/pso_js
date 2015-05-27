@@ -116,7 +116,8 @@
 					  <option value="Bohachevsky">Bohachevsky</option>
 					  <option value="Griewank">Griewank</option>
 					  <option value="Michaelwicz">Michaelwicz</option>
-					  <option value="Noise Image #1">Noise Image #1</option>
+					  <option value="Image: Noise #1">Image: Noise #1</option>
+					  <option value="Image: Spiral">Image: Spiral</option>
 					</select>
 			</td>
 			<td class="parameterHelpText">the function to minimize</td>
@@ -457,8 +458,11 @@ function startSimulation() {
 		case "Michaelwicz":
 			this.ff = new FF_Michaelwicz;
 			break;
-		case "Noise Image #1":
+		case "Image: Noise #1":
 			this.ff = new FF_Image("http://www.revisemri.com/tools/kspace/images/k_randnoise.jpg");
+			break;
+		case "Image: Spiral":
+			this.ff = new FF_Image("http://www.gifwave.com/media/102045_art-processing-adam-ferriss-p5-ellipse_200s.gif");
 			break;
 		default:
 			console.assert(false);
