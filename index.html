@@ -116,6 +116,7 @@
 					  <option value="Bohachevsky">Bohachevsky</option>
 					  <option value="Griewank">Griewank</option>
 					  <option value="Michaelwicz">Michaelwicz</option>
+					  <option value="Noise Image #1">Noise Image #1</option>
 					</select>
 			</td>
 			<td class="parameterHelpText">the function to minimize</td>
@@ -188,7 +189,7 @@
 		
 		
 
-		<canvas id="outputPlotImageCanvas" width="200" height="200"> </canvas>
+		<canvas id="outputPlotImageCanvas" width="200" height="200" style="display: none;"> </canvas>
 	</div>
 </div>
 
@@ -241,6 +242,7 @@
 	function iterationCallback (manager) {
 		var x = scale(manager.bestPosition[0], this.ff.dimensions[0]);
 		var y = scale(manager.bestPosition[1], this.ff.dimensions[1]);
+		
 		document.getElementById("outputBestPosition").innerHTML
 			= "( " + x.toFixed(3) + ", " + y.toFixed(3) + " )";
 		
@@ -257,6 +259,24 @@
 		return true;
 	}
 
+	function displayContour (name) {
+		// Display the contour if one is present
+		if (name != "") {
+			document.getElementById("outputPlotImageContour").style.display = "initial";
+			document.getElementById("outputPlotImageContour").setAttribute("src", name);
+		} else {
+			document.getElementById("outputPlotImageContour").style.display = "none";
+		}
+	}
+	
+	function displayThreeD (name) {
+		if (name != "") {
+			document.getElementById("outputPlotImageThreeD").style.display = "initial";
+			document.getElementById("outputPlotImageThreeD").setAttribute("src", name);
+		} else {
+			document.getElementById("outputPlotImageThreeD").style.display = "none";
+		}
+	}
 	
 	
 	/*
@@ -386,9 +406,11 @@ function startSimulation() {
 		It works by rendering an image to a 'canvas', and then querying that canvas for the pixel values.
 		The downside is that the canvas is rendered, when not needed.
 	*/
-	var FF_Picture = function(filename) 
+	var FF_Image = function(filename) 
 	{
 		this.imageSrc = filename;
+		this.imageSrcContour = "";
+		this.imageSrcThreeD = "";
 		
 		this.myImg = new Image();
 		this.myImg.src = filename;
@@ -399,9 +421,6 @@ function startSimulation() {
 		var w = 200;
 		var h = 200;
 		this.dimensions = [ {min: 0, max: w}, {min: 0, max: h} ];
-		
-		// This doesn't make sense, but required by the display code.
-		this.global = {x: 0, y: 0};
 		
 		this.compute = function (x, y) 
 						{
@@ -438,15 +457,22 @@ function startSimulation() {
 		case "Michaelwicz":
 			this.ff = new FF_Michaelwicz;
 			break;
+		case "Noise Image #1":
+			this.ff = new FF_Image("http://www.revisemri.com/tools/kspace/images/k_randnoise.jpg");
+			break;
 		default:
 			console.assert(false);
 	}
 	
-	document.getElementById("outputPlotImageContour").setAttribute("src",ff.imageSrcContour);
-	document.getElementById("outputPlotImageThreeD").setAttribute("src",ff.imageSrcThreeD);
-
-
-	document.getElementById("outputTruePosition").innerHTML = "( " + ff.global.x.toFixed(3) + ", " + ff.global.y.toFixed(3) + " )";
+	displayContour(ff.imageSrcContour);
+	displayThreeD(ff.imageSrcThreeD);
+	
+	if (typeof(ff.global) !== 'undefined') {
+		document.getElementById("outputTruePosition").innerHTML = "( " + ff.global.x.toFixed(3) + ", " + ff.global.y.toFixed(3) + " )";
+	} else {
+		document.getElementById("outputTruePosition").innerHTML = "<i>not applicable</i>";
+	}
+	
 	var ips = parseFloat(document.getElementById("inputIterationsPerSecond").value);
 	var numParticles = parseFloat(document.getElementById("inputNumParticles").value);
 	
