@@ -26,7 +26,7 @@ The main algorithm is found in *pso.js*. It works with multi-dimensional functio
 
 You can use the interactive demo by visiting: http://marcnormandin.github.io/pso_js/
 
-It will look similar to the following:
+It will look similar to the following screenshot:
 ![Interactive PSO html page](http://i.imgur.com/3d2C4DI.png)
 
 
