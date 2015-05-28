@@ -7,98 +7,24 @@
 	<meta itemprop="description" name="description" content="Particle Swarm Optimization Interactive Javascript Applet">
 	<meta name="author" content="Marc Normandin">
 	
+	<link rel="stylesheet" type="text/css" href="style.css">
+	
 	<title>Particle Swarm Optimization Interactive Demonstration</title>
 	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>	
 	<script src="pso.js"></script>
 	<script src="pso_plot.js"></script>
 
-	<style>
-
-		svg {
-			outline: black solid thick;
-			margin-left: auto;
-			margin-right: auto;
-		}
-		
-		div.pso_simulation {
-			margin-left: auto;
-			margin-right: auto;
-			margin-top: auto;
-			margin-bottom: auto;
-			vertical-align: middle;
-			height: 525px;
-			width: 1200px;
-		}
-		
-		div.plot_info {
-			background-color: transparent;
-			display: inline-block;
-			margin-left: auto;
-			margin-right: auto;
-			text-align: justify;
-			vertical-align: middle;
-			width: 600px;
-		}
-		
-		div.pso_plot {
-			width: 525px;
-			height: 525px;
-			background-color: transparent;
-			display: inline-block;
-			float: left;
-			margin-left: auto;
-			margin-right: auto;
-			vertical-align: middle;
-		}
-		
-		#outputPlotImageContour, #outputPlotImageThreeD {
-			width: 800px;
-			height: 600px;
-		}
-
-		p {
-			text-transform: uppercase;
-		}
-		
-		span {
-			font-size: 1.5em;
-		}
-		
-		img#outputPlotImage {
-			width: 200px;
-			height: 200px;
-		}
-		
-		.parameterHelpText {
-			font-style: italic;
-			font-weight: lighter;
-		}
-		
-		td {
-			text-align: left;
-		}
-		
-		.subtitle {
-			text-transform: uppercase;
-		}
-		
-		button {
-			width: 400px;
-			height: 50px;
-			text-transform: uppercase;
-			font-weight: bold;
-		}
-		
-	</style>
 </head>
 
 <body>
+<div class="header">
 <center>
 <h1>Particle Swarm Optimization:</h1>
 <h2>Demonstration of <a href="https://github.com/marcnormandin/pso_js">pso_js</a> javascript code.</h2>
 <h4>Written by Marc Normandin</h4>
 <hr/>
 </center>
+</div>
 
 <br/>
 <div class="pso_simulation">
@@ -174,7 +100,9 @@
 			</td>
 	</tr>
 	</table>
-	<button id="toggleSimulationButton" onclick="toggleSimulation()"></button>
+	
+	<div style="float:right">
+	<button id="toggleSimulationButton" class="animate" onclick="toggleSimulation()"></button>
 	
 	
 		<p>
@@ -187,15 +115,15 @@
 		<p>
 			Iteration # <span id="outputNumIterations"></span>
 		</p>
-		
+	</div>
 		
 
 		<canvas id="outputPlotImageCanvas" width="200" height="200" style="display: none;"> </canvas>
 	</div>
 </div>
 
-
 <div style="clear:both;"></div>
+
 
 <center>
 <hr/>
