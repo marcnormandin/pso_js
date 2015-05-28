@@ -446,7 +446,7 @@ function startSimulation() {
 	// Create the PSO plot animator object
 	this.plot = new PSOPlot (manager, "plot");
 	this.plot.tickCallbackCallback = iterationCallback.bind(this);
-	this.plot.iterationsPerSecond = ips;	
+	this.plot.iterationsPerSecond = ips;
 	this.plot.startAnimation();
 	
 	// Set the animation and computation stopping condition

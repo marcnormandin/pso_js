@@ -18,6 +18,7 @@ PSO = (function () {
 		this.position = [];
 		this.fitness = Infinity;
 		
+		this.bestParticleId = 0;
 		this.bestPosition = [];
 		this.bestFitness = Infinity;
 		
@@ -120,10 +121,12 @@ PSO = (function () {
 	Manager.prototype.updateGlobalBest = function() {
 		// Find the best
 		// Assign initial values with the first particle
+		this.bestParticleId = 0;
 		this.bestPosition = this.particles[0].bestPosition;
 		this.bestFitness = this.particles[0].bestFitness;
 		for (var i = 1; i < this.particles.length; i++) {
 			if (this.particles[i].bestFitness < this.bestFitness) {
+				this.bestParticleId = i;
 				this.bestFitness = this.particles[i].bestFitness;
 				this.bestPosition = this.particles[i].bestPosition;
 			}
