@@ -9,7 +9,8 @@
 	
 	<link rel="stylesheet" type="text/css" href="style.css">
 	
-	<title>Particle Swarm Optimization Interactive Demonstration</title>
+	<title>Particle Swarm Optimization Interactive Demonstration by Marc Normandin</title>
+	
 	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>	
 	<script src="pso.js"></script>
 	<script src="pso_plot.js"></script>
@@ -17,20 +18,21 @@
 </head>
 
 <body>
+
 <div class="header">
 <center>
-<h1>Particle Swarm Optimization:</h1>
-<h2>Demonstration of <a href="https://github.com/marcnormandin/pso_js">pso_js</a> javascript code.</h2>
+<h2>Particle Swarm Optimization:</h2>
+<h3>Demonstration of <a href="https://github.com/marcnormandin/pso_js">pso_js</a> javascript code</h3>
 <h4>Written by Marc Normandin</h4>
-<hr/>
 </center>
-</div>
+</div> <!-- header -->
 
 <br/>
 <div class="pso_simulation">
 	<div class="pso_plot">
 		<svg id="plot" width="500" height="500" onclick="plot.toggleAnimation()"></svg>
-	</div>
+		<button id="toggleSimulationButton" class="animate" onclick="toggleSimulation()"></button>
+	</div> <!-- pso_plot -->
 
 	<div class="plot_info">
 	<table>
@@ -68,25 +70,25 @@
 			<td><input type="number" id="inputNumParticles" value="20"/></td>
 			<td class="parameterHelpText"></td>
 		</tr>
-	<tr>
-		<td>Inertial weight</td>
-		<td><input type="number" id="inputInertiaWeight" value="0.9"/></td>
-		<td class="parameterHelpText">how much a particle maintains its previous velocity</td>
-	</tr>
-	<tr>
-		<td>Social weight</td>
-		<td><input type="number" id="inputSocialWeight" value="0.1"/></td>
-		<td class="parameterHelpText">how much a particle is influenced by its peers</td>
-	</tr>
-	<tr>
-		<td>Cognitive weight</td>
-		<td><input type="number" id="inputCognitiveWeight" value="0.2"/></td>
-		<td class="parameterHelpText">how much a particle is influenced by its memory</td>
-	</tr>
-	<tr>
-		<td>Iterations per second</td>
-		<td><input type="number" id="inputIterationsPerSecond" value="30"/></td></tr>
-	<tr>
+		<tr>
+			<td>Inertial weight</td>
+			<td><input type="number" id="inputInertiaWeight" value="0.9"/></td>
+			<td class="parameterHelpText">how much a particle maintains its previous velocity</td>
+		</tr>
+		<tr>
+			<td>Social weight</td>
+			<td><input type="number" id="inputSocialWeight" value="0.1"/></td>
+			<td class="parameterHelpText">how much a particle is influenced by its peers</td>
+		</tr>
+		<tr>
+			<td>Cognitive weight</td>
+			<td><input type="number" id="inputCognitiveWeight" value="0.2"/></td>
+			<td class="parameterHelpText">how much a particle is influenced by its memory</td>
+		</tr>
+		<tr>
+			<td>Iterations per second</td>
+			<td><input type="number" id="inputIterationsPerSecond" value="30"/></td></tr>
+		<tr>
 			<td>Stopping condition</td>
 			<td>
 					<select id="inputStoppingCondition">
@@ -98,34 +100,33 @@
 					  <option value="500">500 iterations</option>
 					</select>
 			</td>
-	</tr>
+		</tr>
 	</table>
-	
-	<div style="float:right">
-	<button id="toggleSimulationButton" class="animate" onclick="toggleSimulation()"></button>
-	
-	
-		<p>
-			The best position found is: <span id="outputBestPosition"></span>
-		</p>
-		<p>
-			The true global minimum is: <span id="outputTruePosition"></span>
-		</p>
-		
-		<p>
-			Iteration # <span id="outputNumIterations"></span>
-		</p>
-	</div>
-		
 
-		<canvas id="outputPlotImageCanvas" width="200" height="200" style="display: none;"> </canvas>
-	</div>
-</div>
+	<!-- this is hidden. required for getting pixel data from the canvas. -->
+	<canvas id="outputPlotImageCanvas" width="200" height="200" style="display: none;"> </canvas>
+	</div> <!-- plot_info -->
+</div> <!-- pso_simulation -->
 
 <div style="clear:both;"></div>
 
 
+
+
 <center>
+<p>The best position found is: <span id="outputBestPosition"></span></p>
+
+<p>The true global minimum is: <span id="outputTruePosition"></span></p>
+
+<p>Iteration # <span id="outputNumIterations"></span></p>
+</center>		
+
+<center>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 <hr/>
 
 <h3 class="subtitle">A three-dimensional plot of the function being minimized</h3>
@@ -133,6 +134,11 @@
 
 <hr/>
 
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 <h3 class="subtitle">A two-contour plot of the function being minimized</h3>
 <img id="outputPlotImageContour"/>
 <hr/>
@@ -159,6 +165,8 @@
 		this.simulationIsRunning = false;
 		this.plot.stopAnimation = true;
 		document.getElementById("toggleSimulationButton").innerHTML = "Start Simulation";
+		document.getElementById("toggleSimulationButton").style["background-color"]= "#b5eb9b";
+		document.getElementById("toggleSimulationButton").style["border-color"]= "#74d448";
 	}
 	
 	// Convert from PSO scale to Function scale
@@ -221,6 +229,11 @@ function startSimulation() {
 		this.plot.stopAnimation = true;
 	}
 	
+	document.getElementById("toggleSimulationButton").style["background-color"]= "red";
+	document.getElementById("toggleSimulationButton").style["border-color"]= "black";
+
+
+
 	numIterations = 0;
 	
 	
