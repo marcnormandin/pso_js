@@ -8,10 +8,10 @@ svg {
 
 /* Holds the plot and info */
 div.pso_simulation {
-	/*margin-left: auto;
+	margin-left: auto;
 	margin-right: auto;
 	margin-top: auto;
-	margin-bottom: auto;*/
+	margin-bottom: auto;
 	text-align: center;
 	vertical-align: middle;
 }
@@ -19,7 +19,7 @@ div.pso_simulation {
 /* The D3 plot size is 500x500 */
 div.pso_plot {
 	width: 525px;
-	height: 575px;
+	height: 600px;
 	background-color: transparent;
 	display: inline-block;
 	float: left;
@@ -37,7 +37,7 @@ div.plot_info {
 	margin-right: auto;
 	text-align: justify;
 	vertical-align: middle;
-	width: 525px;
+	min-width: 525px;
 }
 
 /* The information text for each parameter. */
@@ -144,4 +144,25 @@ div.header {
 
 a {
 	color: red;
+}
+
+/* A regular PSO particle. */
+.normalParticle {
+	fill: red;
+	border-color: red;
+	border-style: solid;
+	background-color: red;
+	opacity: 1.0;
+}
+
+/* The particle that found the best location.
+    (not necessarily still at the best location). */
+.bestParticle {
+	fill: lawngreen;
+}
+
+/* The best minimum location found. */
+.bestMinimum {
+	fill: gold;
+	opacity: 0.8;
 }

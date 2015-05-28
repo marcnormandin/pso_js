@@ -2,10 +2,16 @@
 function PSOPlot (manager, idTag) 
 {
 	this.manager = manager;
+	this.idTag = idTag;
 	this.graph_width  = d3.select("#"+idTag).attr("width");
 	this.graph_height = d3.select("#"+idTag).attr("height");
 	
 	this.svg = d3.select("#"+idTag);
+	
+	// Sizes of the drawn circles and best minimum
+	this.normalParticleRadius = 4;
+	this.bestParticleRadius = 6;
+	this.bestMinimumRadius = 8;
 	
 	// All of this is for the tick function
 	this.simulatedTime = 0;
@@ -129,9 +135,8 @@ PSOPlot.prototype.renderParticles = function() {
 	
 	// Enter
 	circles.enter().append("circle")
-		.attr("r", 4)
-		.attr("border",1);
-	
+		.attr("r", this.normalParticleRadius);
+			
 	// Update
 	circles
 		.attr("cx", function(particle) {
@@ -140,14 +145,14 @@ PSOPlot.prototype.renderParticles = function() {
 		.attr("cy", function(particle) {
 			return scaleY(particle.position[1]);
 			})
-		.attr("fill",
+		.attr("class",
 				(function(manager) {
 						return function(particle) 
 								{
 									if (particle.bestFitness == manager.bestFitness) {
-										return "rgb(0,255,0)";
+										return "bestParticle";
 									} else {
-										return "rgba(255,0,0,0.6)";
+										return "normalParticle";
 									}
 								};
 				})(this.manager)
@@ -155,6 +160,20 @@ PSOPlot.prototype.renderParticles = function() {
 		
 	// Exit
 	circles.exit().remove();
+	
+	//  Draw best minimum (overtop of any other particles if required)
+	this.svg.append("circle")
+		.attr("cx", scaleX(this.manager.bestPosition[0]))
+		.attr("cy", scaleY(this.manager.bestPosition[1]))
+		.attr("r",this.bestMinimumRadius)
+		.attr("class", "bestMinimum");
+		
+	//  Draw best particle (overtop of any other particles if required)
+	this.svg.append("circle")
+		.attr("cx", scaleX(this.manager.particles[this.manager.bestParticleId].position[0]))
+		.attr("cy", scaleY(this.manager.particles[this.manager.bestParticleId].position[1]))
+		.attr("r",this.bestParticleRadius)
+		.attr("class", "bestParticle");
 };
 
 /*
