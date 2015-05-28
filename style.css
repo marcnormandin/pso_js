@@ -1,0 +1,130 @@
+
+svg {
+	outline: black solid thick;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+div.pso_simulation {
+	/*margin-left: auto;
+	margin-right: auto;
+	margin-top: auto;
+	margin-bottom: auto;*/
+	vertical-align: middle;
+	height: 525px;
+	width: 1200px;
+}
+
+div.plot_info {
+	background-color: transparent;
+	display: inline-block;
+	/*margin-left: auto;
+	margin-right: auto;*/
+	text-align: justify;
+	vertical-align: middle;
+	/*width: 600px;*/
+}
+
+div.pso_plot {
+	width: 525px;
+	height: 525px;
+	background-color: transparent;
+	display: inline-block;
+	float: left;
+	margin-left: auto;
+	margin-right: auto;
+	vertical-align: middle;
+}
+
+#outputPlotImageContour, #outputPlotImageThreeD {
+	width: 800px;
+	height: 600px;
+}
+
+p {
+	text-transform: uppercase;
+}
+
+span {
+	font-size: 1.5em;
+}
+
+img#outputPlotImage {
+	width: 200px;
+	height: 200px;
+}
+
+.parameterHelpText {
+	font-style: italic;
+	font-weight: lighter;
+}
+
+td {
+	text-align: left;
+	/*border-style:solid;
+	border-color:#000;
+	border-width:1px;*/
+}
+
+.subtitle {
+	text-transform: uppercase;
+}
+
+/*button {
+	width: 400px;
+	height: 50px;
+	text-transform: uppercase;
+	font-weight: bold;
+}*/
+
+button.animate {
+	text-transform: uppercase;
+	font-weight: bold;
+	border-radius:20px;
+	background-color:#b5eb9b;
+	border-style:solid;
+	border-color:#74d448;
+	margin:1em;
+	padding:2em;
+	width:15em;
+}
+
+body {
+    font-family: Verdana, Helvetica, Arial;
+}
+
+input {
+	border-radius:5px;
+	border-style:inset;
+	border-color:#aaa;
+	margin:1em;
+	padding:0.5em;
+	text-align:right;
+	width:5em;
+	background-color:#eee;
+}
+
+select {
+	/*padding:2em;*/
+	margin:1em;
+	width:10em;		
+}
+
+table {
+	font-size:1em;
+	background-color:#ddd;
+	border-radius:5px;
+	border-style:solid;
+	border-color:#000;
+	margin:0 0 1em 0;
+	padding:0.5em;
+	width:600px;
+	height:400px;
+}
+
+div.header {
+	background-color:#000;
+	color:#fff;
+	margin:0em;
+	padding:0.2em;
+}
