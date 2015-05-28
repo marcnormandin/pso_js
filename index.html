@@ -106,6 +106,15 @@
 				(currently iteration #<span id="outputNumIterations"></span>)
 			</td>
 		</tr>
+		<tr>
+			<td>
+				Display Dust
+			</td>
+			<td>
+				<input type="checkbox" id="inputDisplayDust" checked/>
+			</td>
+			<td class="parameterHelpText">display visited particle locations</td>
+		</tr>
 	</table>
 
 	<!-- this is hidden. required for getting pixel data from the canvas. -->
@@ -447,6 +456,12 @@ function startSimulation() {
 	this.plot = new PSOPlot (manager, "plot");
 	this.plot.tickCallbackCallback = iterationCallback.bind(this);
 	this.plot.iterationsPerSecond = ips;
+	if (document.getElementById("inputDisplayDust").checked) {
+		this.plot.featureDisplayDustEnabled = true;
+	} else {
+		this.plot.featureDisplayDustEnabled = false;
+	}
+	this.plot.featureDisplayDust
 	this.plot.startAnimation();
 	
 	// Set the animation and computation stopping condition

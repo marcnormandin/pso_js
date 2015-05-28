@@ -6,7 +6,16 @@ function PSOPlot (manager, idTag)
 	this.graph_width  = d3.select("#"+idTag).attr("width");
 	this.graph_height = d3.select("#"+idTag).attr("height");
 	
+	// Erase previous objects since we will be appending
+	d3.select("#"+idTag).selectAll("*").remove();
+	
 	this.svg = d3.select("#"+idTag);
+	
+	this.svgBackgroundId = idTag + "background";
+	
+	this.gBackground = this.svg.append("g").property("id", this.svgBackgroundId);
+	this.svgForegroundId = idTag + "foreground";
+	this.gForeground = this.svg.append("g").property("id", this.svgForegroundId);
 	
 	// Sizes of the drawn circles and best minimum
 	this.normalParticleRadius = 4;
@@ -23,7 +32,11 @@ function PSOPlot (manager, idTag)
 	this.sampleNumPerWidth = 100;
 	this.sampleNumPerHeight = this.sampleNumPerWidth;
 	
+	this.featureDisplayDustEnabled = true;
+	
 	this.sampleFitnessFunction();
+	
+	this.dustSampleIndices = [];
 };
 
 /*
@@ -81,7 +94,9 @@ PSOPlot.prototype.toggleAnimation = function() {
 
 PSOPlot.prototype.startAnimation = function() {
 		var that = this;
-		this.renderFitnessFunction();
+		if (this.featureDisplayDustEnabled == false) {
+			this.renderFitnessFunction();
+		}
 
 		d3.timer( function(elapsedTime) { return that.tickCallback(elapsedTime);} );
 };
@@ -99,7 +114,12 @@ PSOPlot.prototype.tickCallback = function (elapsedTime) {
 		{
 			this.manager.iterate();
 			
-			this.renderParticles( this.manager.particles );
+			if (this.featureDisplayDustEnabled == true) {
+				this.renderDust();
+			}
+			
+			this.renderParticles();
+			
 			this.lastTimeIterated = this.simulatedTime;
 			
 			var keepLooping = this.tickCallbackCallback(this.manager);
@@ -131,7 +151,7 @@ PSOPlot.prototype.renderParticles = function() {
 		.range([this.graph_height, 0]);
 		
 	// Bind the data
-	var circles = this.svg.selectAll("circle").data(this.manager.particles);
+	var circles = this.gForeground.selectAll("circle").data(this.manager.particles);
 	
 	// Enter
 	circles.enter().append("circle")
@@ -146,34 +166,102 @@ PSOPlot.prototype.renderParticles = function() {
 			return scaleY(particle.position[1]);
 			})
 		.attr("class",
-				(function(manager) {
+				(function(psoplot, manager) {
 						return function(particle) 
 								{
+									if (psoplot.featureDisplayDustEnabled == true) {
+										var i = Math.floor(scaleX(particle.position[0]) / psoplot.Rwpixel);
+										var j = Math.floor(scaleY(particle.position[1]) / psoplot.Rhpixel);
+										var c = i*psoplot.sampleNumPerHeight + j;
+										
+										// Not all particles will be within the domain, so some
+										// can not be rendered.
+										if ( (c >= 0) && (c < psoplot.fitnessFunctionSamples.length)) {
+											console.assert(c < psoplot.fitnessFunctionSamples.length);
+											//psoplot.fitnessFunctionSamples[c]["visited"] = true;
+											psoplot.dustSampleIndices.push( c );
+										}
+									}
+									
 									if (particle.bestFitness == manager.bestFitness) {
 										return "bestParticle";
 									} else {
 										return "normalParticle";
 									}
 								};
-				})(this.manager)
+				})(this, this.manager)
 			);
 		
 	// Exit
 	circles.exit().remove();
 	
 	//  Draw best minimum (overtop of any other particles if required)
-	this.svg.append("circle")
+	this.gForeground.append("circle")
 		.attr("cx", scaleX(this.manager.bestPosition[0]))
 		.attr("cy", scaleY(this.manager.bestPosition[1]))
 		.attr("r",this.bestMinimumRadius)
 		.attr("class", "bestMinimum");
 		
 	//  Draw best particle (overtop of any other particles if required)
-	this.svg.append("circle")
+	this.gForeground.append("circle")
 		.attr("cx", scaleX(this.manager.particles[this.manager.bestParticleId].position[0]))
 		.attr("cy", scaleY(this.manager.particles[this.manager.bestParticleId].position[1]))
 		.attr("r",this.bestParticleRadius)
 		.attr("class", "bestParticle");
+};
+
+/*
+	This renders rectangles at the places of the sampled fitness function.
+	This is shown as the background behind the particles.
+*/
+PSOPlot.prototype.renderDust = function() {
+	var scaleX = d3.scale.linear()
+		.domain([this.manager.dimensions[0].min, this.manager.dimensions[0].max])
+		.range([0, this.graph_width]);
+		
+	var scaleY = d3.scale.linear()
+		.domain([this.manager.dimensions[1].min, this.manager.dimensions[1].max])
+		.range([this.graph_height, 0]);
+
+	// scale the colour
+	var scaleValue = d3.scale.linear()
+		.domain(d3.extent(this.fitnessFunctionSamples, function(s) { return s["value"]; }))
+		.range([255, 0]);
+    
+	// Bind the data
+	var rects = this.gBackground.selectAll("rect").data(this.dustSampleIndices);
+	
+	// Enter
+	rects.enter().append("rect")
+		.attr("border",1)
+		.attr("width", this.Rwpixel)
+		.attr("height", this.Rhpixel);
+	
+	// Update
+	rects
+		.attr("x", (function(psoplot) 
+					  { return function(sampleId) 
+					  	{
+							return scaleX(psoplot.fitnessFunctionSamples[sampleId]["x"]);
+						}
+					 })(this))
+		.attr("y", (function(psoplot) 
+					  { return function(sampleId) 
+					  	{
+							return scaleY(psoplot.fitnessFunctionSamples[sampleId]["y"]);
+						}
+					 })(this))
+		.attr("fill",(function(psoplot) 
+					  { return function(sampleId) 
+					  	{			
+							var c = Math.floor(scaleValue(psoplot.fitnessFunctionSamples[sampleId]["value"]));
+							var col = "rgb("+c+","+c+","+c+")";
+							return col;
+						}
+					 })(this));
+		
+	// Exit
+	rects.exit().remove();
 };
 
 /*
@@ -195,7 +283,7 @@ PSOPlot.prototype.renderFitnessFunction = function() {
 		.range([255, 0]);
     
 	// Bind the data
-	var rects = this.svg.selectAll("rect").data(this.fitnessFunctionSamples);
+	var rects = this.gForeground.selectAll("rect").data(this.fitnessFunctionSamples);
 	
 	// Enter
 	rects.enter().append("rect")
@@ -222,4 +310,3 @@ PSOPlot.prototype.renderFitnessFunction = function() {
 	// Exit
 	rects.exit().remove();
 };
-
