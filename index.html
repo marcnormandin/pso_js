@@ -71,6 +71,9 @@
 			<td class="parameterHelpText"></td>
 		</tr>
 		<tr>
+          <td colspan="3"><hr/></td>
+    	</tr>
+		<tr>
 			<td>Inertial weight</td>
 			<td><input type="number" id="inputInertiaWeight" value="0.9"/></td>
 			<td class="parameterHelpText">particle's perseverance</td>
@@ -85,6 +88,9 @@
 			<td><input type="number" id="inputCognitiveWeight" value="0.2"/></td>
 			<td class="parameterHelpText">particle's independence</td>
 		</tr>
+		<tr>
+          <td colspan="3"><hr/></td>
+    	</tr>
 		<tr>
 			<td>Iterations per second</td>
 			<td><input type="number" id="inputIterationsPerSecond" value="30"/></td></tr>
@@ -111,6 +117,17 @@
 			<td><input type="number" id="inputParticleRadius" value="6"/></td>
 			<td class="parameterHelpText">radius of particles in pixels</td>
 		</tr>
+		<tr>
+			<td>Best Particle radius</td>
+			<td><input type="number" id="inputBestParticleRadius" value="8"/></td>
+			<td class="parameterHelpText">radius of best particle in pixels</td>
+		</tr>
+		<tr>
+			<td>Best Minimum radius</td>
+			<td><input type="number" id="inputMinimumRadius" value="10"/></td>
+			<td class="parameterHelpText">radius of minimum in pixels</td>
+		</tr>
+		
 		<tr>
 			<td>
 				Display Dust
@@ -461,8 +478,8 @@ function startSimulation() {
 	// Create the PSO plot animator object
 	this.plot = new PSOPlot (manager, "plot");
 	this.plot.normalParticleRadius = parseFloat(document.getElementById("inputParticleRadius").value);
-	this.plot.bestParticleRadius = 7;
-	this.plot.bestMinimumRadius = 10;
+	this.plot.bestParticleRadius = parseFloat(document.getElementById("inputBestParticleRadius").value);;
+	this.plot.bestMinimumRadius = parseFloat(document.getElementById("inputMinimumRadius").value);;
 	this.plot.tickCallbackCallback = iterationCallback.bind(this);
 	this.plot.iterationsPerSecond = ips;
 	if (document.getElementById("inputDisplayDust").checked) {
