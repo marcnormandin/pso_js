@@ -1,3 +1,10 @@
+body {
+    font-family: 'Pontano Sans', Verdana, Helvetica, Arial;
+	margin:0;
+	padding:0;
+	background-color: #D1E0FF;
+	background-image: url("http://i.imgur.com/A2rqm.png");
+}
 
 svg {
 	outline: black solid thick;
@@ -123,11 +130,7 @@ td {
 	background-color: #FFD633;
 }
 
-body {
-    font-family: 'Pontano Sans', Verdana, Helvetica, Arial;
-	margin:0;
-	padding:0;
-}
+
 
 input {
 	border-radius:5px;
