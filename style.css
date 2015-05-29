@@ -4,6 +4,7 @@ svg {
 	margin-left: auto;
 	margin-right: auto;
 	float: right;
+	background-color: pink;
 }
 
 /* Holds the plot and info */
