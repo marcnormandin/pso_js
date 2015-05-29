@@ -107,6 +107,11 @@
 			</td>
 		</tr>
 		<tr>
+			<td>Particle radius</td>
+			<td><input type="number" id="inputParticleRadius" value="6"/></td>
+			<td class="parameterHelpText">radius of particles in pixels</td>
+		</tr>
+		<tr>
 			<td>
 				Display Dust
 			</td>
@@ -455,7 +460,7 @@ function startSimulation() {
 	
 	// Create the PSO plot animator object
 	this.plot = new PSOPlot (manager, "plot");
-	this.plot.normalParticleRadius = 6;
+	this.plot.normalParticleRadius = parseFloat(document.getElementById("inputParticleRadius").value);
 	this.plot.bestParticleRadius = 7;
 	this.plot.bestMinimumRadius = 10;
 	this.plot.tickCallbackCallback = iterationCallback.bind(this);
