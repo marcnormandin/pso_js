@@ -85,20 +85,42 @@ td {
 	font-weight: bold;
 }*/
 
-button.animate:hover {
-	background-color: orange;
-}
-
-button.animate {
+#toggleSimulationButton.inactive {
+	/* green */
+	font-size: 0.8em;
 	text-transform: uppercase;
 	font-weight: bold;
 	border-radius:20px;
-	background-color:#b5eb9b;
+	background-color: #b5eb9b;
 	border-style:solid;
-	border-color:#74d448;
+	border-color: #74d448;
+	border-width: thick;
 	margin:1em;
-	padding:2em;
+	padding:1em;
 	width:450px;
+}
+
+#toggleSimulationButton.inactive:hover {
+	background-color: #FFD633;
+}
+
+
+#toggleSimulationButton.active {
+	font-size: 0.8em;
+	text-transform: uppercase;
+	font-weight: bold;
+	border-radius:20px;
+	background-color: #FF1919;
+	border-style:solid;
+	border-color: #CC0000;
+	border-width: thick;
+	margin:1em;
+	padding:1em;
+	width:450px;
+}
+
+#toggleSimulationButton.active:hover {
+	background-color: #FFD633;
 }
 
 body {
@@ -168,21 +190,22 @@ a {
 
 /* A regular PSO particle. */
 .normalParticle {
-	fill: red;
-	border-color: red;
+	fill: #E60000;
+	border-color: #E60000;
 	border-style: solid;
-	background-color: red;
-	opacity: 1.0;
+	background-color: #E60000;
+	opacity: 0.8;
 }
 
 /* The particle that found the best location.
     (not necessarily still at the best location). */
 .bestParticle {
-	fill: lawngreen;
+	fill: #33CC33;
+	opacity: 0.8;
 }
 
 /* The best minimum location found. */
 .bestMinimum {
-	fill: gold;
+	fill: #CCCC00;
 	opacity: 0.8;
 }

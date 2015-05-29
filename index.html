@@ -31,7 +31,7 @@
 <div class="pso_simulation">
 	<div class="pso_plot">
 		<svg id="plot" width="500" height="500" onclick="plot.toggleAnimation()"></svg>
-		<button id="toggleSimulationButton" class="animate" onclick="toggleSimulation()"></button>
+		<button id="toggleSimulationButton" class="inactive" onclick="toggleSimulation()"></button>
 	</div> <!-- pso_plot -->
 
 	<div class="plot_info">
@@ -178,8 +178,7 @@
 		this.simulationIsRunning = false;
 		this.plot.stopAnimation = true;
 		document.getElementById("toggleSimulationButton").innerHTML = "Start Simulation";
-		document.getElementById("toggleSimulationButton").style["background-color"]= "#b5eb9b";
-		document.getElementById("toggleSimulationButton").style["border-color"]= "#74d448";
+		document.getElementById("toggleSimulationButton").className = "inactive";
 	}
 	
 	// Convert from PSO scale to Function scale
@@ -242,8 +241,8 @@ function startSimulation() {
 		this.plot.stopAnimation = true;
 	}
 	
-	document.getElementById("toggleSimulationButton").style["background-color"]= "red";
-	document.getElementById("toggleSimulationButton").style["border-color"]= "black";
+	document.getElementById("toggleSimulationButton").className = "active";
+
 
 
 
@@ -456,6 +455,9 @@ function startSimulation() {
 	
 	// Create the PSO plot animator object
 	this.plot = new PSOPlot (manager, "plot");
+	this.plot.normalParticleRadius = 6;
+	this.plot.bestParticleRadius = 7;
+	this.plot.bestMinimumRadius = 10;
 	this.plot.tickCallbackCallback = iterationCallback.bind(this);
 	this.plot.iterationsPerSecond = ips;
 	if (document.getElementById("inputDisplayDust").checked) {
