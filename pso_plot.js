@@ -79,7 +79,7 @@ PSOPlot.prototype.sampleFitnessFunction = function () {
 			
 			var sample_value = this.manager.fitnessFunction( sample_x, sample_y );
 			
-			this.fitnessFunctionSamples.push( {x: rw, y: rh, value: sample_value} );
+			this.fitnessFunctionSamples.push( {x: rw, y: rh, value: sample_value, visited: false} );
 		}
 	}
 };
@@ -178,8 +178,12 @@ PSOPlot.prototype.renderParticles = function() {
 										// can not be rendered.
 										if ( (c >= 0) && (c < psoplot.fitnessFunctionSamples.length)) {
 											console.assert(c < psoplot.fitnessFunctionSamples.length);
-											//psoplot.fitnessFunctionSamples[c]["visited"] = true;
-											psoplot.dustSampleIndices.push( c );
+											// Only add the particle to the dust array if it has
+											// not previously been added.
+											if (psoplot.fitnessFunctionSamples[c]["visited"] == false) {
+												psoplot.fitnessFunctionSamples[c]["visited"] = true;
+												psoplot.dustSampleIndices.push( c );
+											}
 										}
 									}
 									
