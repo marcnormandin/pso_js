@@ -29,12 +29,11 @@ function PSOPlot (manager, idTag)
 	this.iterationsPerSecond = 60;
 	this.lastTimeIterated = 0;
 	this.stopAnimation = false;
-	this.sampleNumPerWidth = 100;
+	this.sampleNumSize = 100;
+	this.sampleNumPerWidth = this.sampleNumSize;
 	this.sampleNumPerHeight = this.sampleNumPerWidth;
 	
 	this.featureDisplayDustEnabled = true;
-	
-	this.sampleFitnessFunction();
 	
 	this.dustSampleIndices = [];
 };
@@ -93,6 +92,9 @@ PSOPlot.prototype.toggleAnimation = function() {
 };
 
 PSOPlot.prototype.startAnimation = function() {
+		this.sampleNumPerWidth = this.sampleNumSize;
+		this.sampleNumPerHeight = this.sampleNumPerWidth;
+		this.sampleFitnessFunction();
 		var that = this;
 		if (this.featureDisplayDustEnabled == false) {
 			this.renderFitnessFunction();

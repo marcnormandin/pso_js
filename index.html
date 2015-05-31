@@ -105,7 +105,7 @@
 					  <option value="200">200 iterations</option>
 					  <option value="300">300 iterations</option>
 					  <option value="400">400 iterations</option>
-					  <option value="500">500 iterations</option>
+					  <option value="500" selected="selected">200 iterations</option>
 					</select>
 			</td>
 			<td style="text-align: right;">
@@ -136,6 +136,11 @@
 				<input type="checkbox" id="inputDisplayDust" checked/>
 			</td>
 			<td class="parameterHelpText">display visited particle locations</td>
+		</tr>
+		<tr>
+			<td>Background dimension</td>
+			<td><input type="number" id="inputSampleGridSize" value="100"/></td>
+			<td class="parameterHelpText">Size of background sample grid</td>
 		</tr>
 	</table>
 
@@ -478,8 +483,9 @@ function startSimulation() {
 	// Create the PSO plot animator object
 	this.plot = new PSOPlot (manager, "plot");
 	this.plot.normalParticleRadius = parseFloat(document.getElementById("inputParticleRadius").value);
-	this.plot.bestParticleRadius = parseFloat(document.getElementById("inputBestParticleRadius").value);;
-	this.plot.bestMinimumRadius = parseFloat(document.getElementById("inputMinimumRadius").value);;
+	this.plot.bestParticleRadius = parseFloat(document.getElementById("inputBestParticleRadius").value);
+	this.plot.bestMinimumRadius = parseFloat(document.getElementById("inputMinimumRadius").value);
+	this.plot.sampleNumSize = parseFloat(document.getElementById("inputSampleGridSize").value);
 	this.plot.tickCallbackCallback = iterationCallback.bind(this);
 	this.plot.iterationsPerSecond = ips;
 	if (document.getElementById("inputDisplayDust").checked) {
