@@ -74,9 +74,19 @@
           <td colspan="3"><hr/></td>
     	</tr>
 		<tr>
-			<td>Inertial weight</td>
-			<td><input type="number" id="inputInertiaWeight" value="0.72984"/></td>
+			<td>Inertial weight (Begin)</td>
+			<td><input type="number" id="inputInertiaWeightBegin" value="0.72984"/></td>
 			<td class="parameterHelpText">particle's perseverance</td>
+		</tr>
+		<tr>
+			<td>Inertial weight (End)</td>
+			<td><input type="number" id="inputInertiaWeightEnd" value="0.72984"/></td>
+			<td class="parameterHelpText">particle's perseverance</td>
+		</tr>
+		<tr>
+			<td>Inertial weight (Range)</td>
+			<td><input type="number" id="inputInertiaWeightIterationRange" value="1"/></td>
+			<td class="parameterHelpText">number of iterations to scale over</td>
 		</tr>
 		<tr>
 			<td>Social weight</td>
@@ -462,7 +472,11 @@ function startSimulation() {
 	
 	// Create the main PSO computation object
 	this.manager = new PSO.Manager( this.ff, numParticles );
-	this.manager.inertiaWeight = parseFloat(document.getElementById("inputInertiaWeight").value);
+	this.manager.setInertiaScaling(true, 
+		parseFloat(document.getElementById("inputInertiaWeightBegin").value),
+		parseFloat(document.getElementById("inputInertiaWeightEnd").value),
+		parseFloat(document.getElementById("inputInertiaWeightIterationRange").value) );
+	//this.manager.inertiaWeight = parseFloat(document.getElementById("inputInertiaWeight").value);
 	this.manager.socialWeight = parseFloat(document.getElementById("inputSocialWeight").value);
 	this.manager.cognitiveWeight = parseFloat(document.getElementById("inputCognitiveWeight").value);
 	

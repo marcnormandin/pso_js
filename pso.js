@@ -45,7 +45,7 @@ PSO = (function () {
 			}
 			this.bestFitness = this.fitness;
 		}
-	};
+	}
 	
 	Particle.prototype.iterate = function (manager) {
 		// Get the social best
@@ -65,7 +65,7 @@ PSO = (function () {
 			this.velocity[i] = vMomentum + vCognitive + vSocial;
 			this.position[i] = this.position[i] + this.velocity[i];
 		}
-	};
+	}
 
 	// Manager class
 	// Maintains a list of particles
@@ -79,7 +79,22 @@ PSO = (function () {
 		this.dimensions = [ {min: -1, max: 1}, {min: -1, max: 1} ];
 		this.fitnessFunction = fitnessFunction.compute;
 		
-		this.inertiaWeight = 0.8;
+		// Number of iterations that have been computed
+		this.iterationNum = 0;
+		
+		// If linear scaling is enabled, then 'inertiaWeight' will change
+		this.enableInertiaWeightScaling = true;
+		// y = mx + b
+		// m = (y_end - y_start) / (range-0) + y_start
+		this.setInertiaScaling(true, 0.7, 0.7, 1);
+		
+		this.inertiaWeightStart = 0.7;
+		this.inertiaWeightEnd = 0.7;
+		this.inertiaWeightIterationRange = 1;
+		console.assert(this.inertiaWeightIterationRange > 0);
+		this.inertiaWeightSlope = (this.inertiaWeightEnd - this.inertiaWeightStart) / this.inertiaWeightIterationRange;
+		
+		this.inertiaWeight = this.inertiaWeightStart;
 		this.cognitiveWeight = 2.0;
 		this.socialWeight = 0.1;
 	
@@ -97,6 +112,22 @@ PSO = (function () {
 		
 		this.topology = "ring";
 	};
+	
+	Manager.prototype.setInertiaScaling = function (enable, start, finish, range) {
+		this.enableInertiaWeightScaling = true;
+		this.inertiaWeightStart = start;
+		this.inertiaWeightEnd = finish;
+		this.inertiaWeightIterationRange = range;
+		this.inertiaWEight = this.inertiaWeightStart;
+		this.inertiaWeightSlope = (this.inertiaWeightEnd - this.inertiaWeightStart) / (this.inertiaWeightIterationRange);
+	}
+	
+	Manager.prototype.addParticle = function() {
+		var uniqueId = this.particles.length;
+		var p = new Particle(this, uniqueId);
+		this.particles.push(p);
+	}
+	
 
 	// Adds a particle the set of particles taking
 	// part in the estimation
@@ -104,7 +135,7 @@ PSO = (function () {
 		var uniqueId = this.particles.length;
 		var p = new Particle(this, uniqueId);
 		this.particles.push(p);
-	};
+	}
 	
 	Manager.prototype.iterate = function() {
 		this.numCollisions = 0;
@@ -116,7 +147,12 @@ PSO = (function () {
 		// This should only be for the fully connected topology
 		// this.updateSocialBest()
 		this.updateGlobalBest();
-	};
+		
+		this.updateInertiaWeight();
+		console.log("inertiaWeight = " + this.inertiaWeight);
+		
+		this.iterationNum++;
+	}
 	
 	Manager.prototype.updateGlobalBest = function() {
 		// Find the best
@@ -191,7 +227,7 @@ PSO = (function () {
 		
 		// return the local best position
 		return this.particles[lbId].bestPosition;
-	};
+	}
 	
 	// Star (Global best)
 	Manager.prototype.getSocialBest_FullyConnected = function(particle) {
@@ -200,7 +236,22 @@ PSO = (function () {
 	
 	Manager.prototype.collisionCallback = function () {
 		this.numCollisions++;
-	};
+	}
+	
+	// Compute inertia. This is based on equation 4.1 from:
+    // http://www.hindawi.com/journals/ddns/2010/462145/
+	Manager.prototype.updateInertiaWeight = function () {
+		if (this.enableInertiaWeightScaling == false) {
+			return;
+		}
+		
+		if (this.iterationNum > this.inertiaWeightIterationRange) {
+			this.inertiaWeight = this.inertiaWeightEnd;
+			return;
+		}
+        
+        this.inertiaWeight = this.inertiaWeightSlope * (this.iterationNum) + this.inertiaWeightStart;
+	}
 	
  	return {
 		Manager : Manager
