@@ -191,6 +191,15 @@ a {
 	color: red;
 }
 
+/* A lbest position. */
+.lbest {
+	fill: purple;
+	border-color: purple;
+	border-style: solid;
+	background-color: purple;
+	opacity: 0.8;
+}
+
 /* A regular PSO particle. */
 .normalParticle {
 	fill: #E60000;

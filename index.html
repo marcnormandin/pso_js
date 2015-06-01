@@ -148,6 +148,20 @@
 			<td class="parameterHelpText">display visited particle locations</td>
 		</tr>
 		<tr>
+			<td>
+				Display lbests
+			</td>
+			<td>
+				<input type="checkbox" id="inputDisplayLBests"/>
+			</td>
+			<td class="parameterHelpText">display each particles' local best</td>
+		</tr>
+		<tr>
+			<td>LBest radius</td>
+			<td><input type="number" id="inputLBestRadius" value="8"/></td>
+			<td class="parameterHelpText">radius of lbest coordinates in pixels</td>
+		</tr>
+		<tr>
 			<td>Background dimension</td>
 			<td><input type="number" id="inputSampleGridSize" value="100"/></td>
 			<td class="parameterHelpText">Size of background sample grid</td>
@@ -507,6 +521,14 @@ function startSimulation() {
 	} else {
 		this.plot.featureDisplayDustEnabled = false;
 	}
+	
+	if (document.getElementById("inputDisplayLBests").checked) {
+		this.plot.featureDisplayLBests = true;
+	} else {
+		this.plot.featureDisplayLBests = false;
+	}
+	this.plot.lbestRadius = parseFloat(document.getElementById("inputLBestRadius").value);
+	
 	this.plot.featureDisplayDust
 	this.plot.startAnimation();
 	

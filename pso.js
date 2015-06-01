@@ -137,6 +137,8 @@ PSO = (function () {
 		this.particles.push(p);
 	}
 	
+	// This is the main function that is called
+	// to simulate an iteration of the simulation
 	Manager.prototype.iterate = function() {
 		this.numCollisions = 0;
 		for (var i = 0; i < this.particles.length; i++) {

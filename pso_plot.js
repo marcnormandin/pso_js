@@ -12,10 +12,16 @@ function PSOPlot (manager, idTag)
 	this.svg = d3.select("#"+idTag);
 	
 	this.svgBackgroundId = idTag + "background";
-	
 	this.gBackground = this.svg.append("g").property("id", this.svgBackgroundId);
+	
 	this.svgForegroundId = idTag + "foreground";
 	this.gForeground = this.svg.append("g").property("id", this.svgForegroundId);
+	
+	this.svgLBestId = idTag + "lbest";
+	this.gLBest = this.svg.append("g").property("id", this.svgLBestId);
+	
+	this.svgBestId = idTag + "best";
+	this.gBest = this.svg.append("g").property("id", this.svgBestId);
 	
 	// Sizes of the drawn circles and best minimum
 	this.normalParticleRadius = 4;
@@ -34,6 +40,8 @@ function PSOPlot (manager, idTag)
 	this.sampleNumPerHeight = this.sampleNumPerWidth;
 	
 	this.featureDisplayDustEnabled = true;
+	this.featureDisplayLBests = false;
+	this.lbestRadius = 4;
 	
 	this.dustSampleIndices = [];
 };
@@ -122,6 +130,12 @@ PSOPlot.prototype.tickCallback = function (elapsedTime) {
 			
 			this.renderParticles();
 			
+			if (this.featureDisplayLBests == true) {
+				this.renderLBests();
+			}
+			
+			this.renderGBest();
+			
 			this.lastTimeIterated = this.simulatedTime;
 			
 			var keepLooping = this.tickCallbackCallback(this.manager);
@@ -139,6 +153,32 @@ PSOPlot.prototype.tickCallback = function (elapsedTime) {
 	this.lastTime = elapsedTime;
 };
 
+PSOPlot.prototype.renderGBest = function() {
+	var scaleX = d3.scale.linear()
+		.domain([this.manager.dimensions[0].min, this.manager.dimensions[0].max])
+		.range([0, this.graph_width]);
+
+	var scaleY = d3.scale.linear()
+		.domain([this.manager.dimensions[1].min, this.manager.dimensions[1].max])
+		.range([this.graph_height, 0]);
+
+	this.gBest.selectAll("*").remove();
+	
+	//  Draw best minimum (overtop of any other particles if required)
+	this.gBest.append("circle")
+		.attr("cx", scaleX(this.manager.bestPosition[0]))
+		.attr("cy", scaleY(this.manager.bestPosition[1]))
+		.attr("r",this.bestMinimumRadius)
+		.attr("class", "bestMinimum");
+
+	//  Draw best particle (overtop of any other particles if required)
+	this.gBest.append("circle")
+		.attr("cx", scaleX(this.manager.particles[this.manager.bestParticleId].position[0]))
+		.attr("cy", scaleY(this.manager.particles[this.manager.bestParticleId].position[1]))
+		.attr("r",this.bestParticleRadius)
+		.attr("class", "bestParticle");
+}
+				
 /*
 	This renders each of the particles.
 	The best particle is coloured green. (This should be set by a style file.)
@@ -200,21 +240,46 @@ PSOPlot.prototype.renderParticles = function() {
 		
 	// Exit
 	circles.exit().remove();
-	
-	//  Draw best minimum (overtop of any other particles if required)
-	this.gForeground.append("circle")
-		.attr("cx", scaleX(this.manager.bestPosition[0]))
-		.attr("cy", scaleY(this.manager.bestPosition[1]))
-		.attr("r",this.bestMinimumRadius)
-		.attr("class", "bestMinimum");
-		
-	//  Draw best particle (overtop of any other particles if required)
-	this.gForeground.append("circle")
-		.attr("cx", scaleX(this.manager.particles[this.manager.bestParticleId].position[0]))
-		.attr("cy", scaleY(this.manager.particles[this.manager.bestParticleId].position[1]))
-		.attr("r",this.bestParticleRadius)
-		.attr("class", "bestParticle");
 };
+
+
+PSOPlot.prototype.renderLBests = function() {
+	var scaleX = d3.scale.linear()
+		.domain([this.manager.dimensions[0].min, this.manager.dimensions[0].max])
+		.range([0, this.graph_width]);
+		
+	var scaleY = d3.scale.linear()
+		.domain([this.manager.dimensions[1].min, this.manager.dimensions[1].max])
+		.range([this.graph_height, 0]);
+		
+	// Bind the data
+	var circles = this.gLBest.selectAll("circle").data(this.manager.particles);
+	
+	// Enter
+	circles.enter().append("circle")
+		.attr("r", this.lbestRadius);
+			
+	// Update
+	circles
+		.attr("cx", function(particle) {
+			return scaleX(particle.bestPosition[0]);
+			})
+		.attr("cy", function(particle) {
+			return scaleY(particle.bestPosition[1]);
+			})
+		.attr("class",
+				(function(psoplot, manager) {
+						return function(particle) 
+								{	
+									return "lbest";
+								};
+				})(this, this.manager)
+			);
+		
+	// Exit
+	circles.exit().remove();
+};
+
 
 /*
 	This renders rectangles at the places of the sampled fitness function.
