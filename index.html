@@ -27,6 +27,17 @@
 </center>
 </div> <!-- header -->
 
+<div>
+<center>
+<ul>
+	<li><span style="color: red;">red</span> are particle current locations</li>
+	<li><span style="color: purple;">purple</span> are particle local best locations</li>
+	<li><span style="color: yellow;">yellow</span> is the best overall minimum found</li>
+	<li><span style="color: green;">green</span> is the particle that found the best minimum</li>
+</ul>
+</center>
+</div>
+
 <br/>
 <div class="pso_simulation">
 	<div class="pso_plot">
@@ -129,7 +140,7 @@
 		</tr>
 		<tr>
 			<td>Best Particle radius</td>
-			<td><input type="number" id="inputBestParticleRadius" value="8"/></td>
+			<td><input type="number" id="inputBestParticleRadius" value="6"/></td>
 			<td class="parameterHelpText">radius of best particle in pixels</td>
 		</tr>
 		<tr>
@@ -152,7 +163,7 @@
 				Display lbests
 			</td>
 			<td>
-				<input type="checkbox" id="inputDisplayLBests"/>
+				<input type="checkbox" id="inputDisplayLBests" checked/>
 			</td>
 			<td class="parameterHelpText">display each particles' local best</td>
 		</tr>
