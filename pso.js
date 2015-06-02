@@ -151,7 +151,7 @@ PSO = (function () {
 		this.updateGlobalBest();
 		
 		this.updateInertiaWeight();
-		console.log("inertiaWeight = " + this.inertiaWeight);
+		//console.log("inertiaWeight = " + this.inertiaWeight);
 		
 		this.iterationNum++;
 	}

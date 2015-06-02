@@ -11,7 +11,10 @@
 	
 	<title>Particle Swarm Optimization Interactive Demonstration by Marc Normandin</title>
 	
-	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>	
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<!-- <script src="jquery-1.11.3.js"></script> -->
+	
 	<script src="pso.js"></script>
 	<script src="pso_plot.js"></script>
 
@@ -27,161 +30,182 @@
 </center>
 </div> <!-- header -->
 
-<div>
-<center>
-<ul>
-	<li><span style="color: red;">red</span> are particle current locations</li>
-	<li><span style="color: purple;">purple</span> are particle local best locations</li>
-	<li><span style="color: yellow;">yellow</span> is the best overall minimum found</li>
-	<li><span style="color: green;">green</span> is the particle that found the best minimum</li>
-</ul>
-</center>
-</div>
-
 <br/>
 <div class="pso_simulation">
-	<div class="pso_plot">
+<div class="pso_plot">
+<div class="tab-panels">
+		<ul class="tabs">
+			<li rel="panelBasic" class="active">Basic</li>
+			<li rel="panelWeights">Weights</li>
+			<li rel="panelStoppingCondition">Stopping Condition</li>
+			<li rel="panelDisplay">Display</li>
+			<li rel="panelLegend">Legend</li>
+		</ul>
+
+		<div id="panelBasic" class="panel active">
+			<table>
+				<tr>
+					<td>Function</td>
+					<td>
+							<select id="inputFunction" onchange="startSimulation()">
+							  <option value="Salomon">Function: Salomon</option>
+							  <option value="Bohachevsky">Function: Bohachevsky</option>
+							  <option value="Griewank">Function: Griewank</option>
+							  <option value="Michaelwicz">Function: Michaelwicz</option>
+							  <option value="Image: Noise #1">Image: Noise #1</option>
+							  <option value="Image: Spiral">Image: Spiral</option>
+							</select>
+					</td>
+					<td class="parameterHelpText">the function to minimize</td>
+				</tr>
+				<tr>
+					<td>Topology</td>
+					<td>
+							<select id="inputTopology">
+							  <option value="Ring">Ring (local best)</option>
+							  <option value="Fully Connected">Fully Connected (global best)</option>
+							</select>
+					</td>
+					<td class="parameterHelpText">how the particles communicate</td>
+				</tr>
+				<tr>
+					<td># Neighbors</td>
+					<td><input type="number" id="inputNumNeighbors" value="2"/></td>
+					<td class="parameterHelpText">particle's peers<br/> (must be even #)</td>
+				</tr>
+				<tr>
+					<td># Particles</td>
+					<td><input type="number" id="inputNumParticles" value="50"/></td>
+					<td class="parameterHelpText"></td>
+				</tr>
+				<tr>
+					<td>Iterations per second</td>
+					<td><input type="number" id="inputIterationsPerSecond" value="20"/></td>
+				</tr>
+		<tr>
+    		</table>
+		</div>
+
+		<div id="panelWeights" class="panel">
+			<table>
+				<tr>
+					<td>Inertial weight (Begin)</td>
+					<td><input type="number" id="inputInertiaWeightBegin" value="0.72984"/></td>
+					<td class="parameterHelpText">particle's perseverance</td>
+				</tr>
+				<tr>
+					<td>Inertial weight (End)</td>
+					<td><input type="number" id="inputInertiaWeightEnd" value="0.72984"/></td>
+					<td class="parameterHelpText">particle's perseverance</td>
+				</tr>
+				<tr>
+					<td>Inertial weight (Range)</td>
+					<td><input type="number" id="inputInertiaWeightIterationRange" value="1"/></td>
+					<td class="parameterHelpText">number of iterations to scale over</td>
+				</tr>
+				<tr>
+					<td>Social weight</td>
+					<td><input type="number" id="inputSocialWeight" value="1.496172"/></td>
+					<td class="parameterHelpText">particle's peer pressure</td>
+				</tr>
+				<tr>
+					<td>Cognitive weight</td>
+					<td><input type="number" id="inputCognitiveWeight" value="1.496172"/></td>
+					<td class="parameterHelpText">particle's independence</td>
+				</tr>
+			</table>
+		</div>
+
+		<div id="panelStoppingCondition" class="panel">
+			<table>
+				<tr>
+					<td>Stopping condition</td>
+					<td>
+							<select id="inputStoppingCondition">
+							  <option value="none">Never</option>
+							  <option value="25">25 iterations</option>
+							  <option value="50">50 iterations</option>
+							  <option value="100">100 iterations</option>
+							  <option value="200">200 iterations</option>
+							  <option value="300">300 iterations</option>
+							  <option value="400">400 iterations</option>
+							  <option value="500" selected="selected">500 iterations</option>
+							</select>
+					</td>
+					<td style="text-align: right;">
+						(current iteration #<span id="outputNumIterations"></span>)
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<div id="panelDisplay" class="panel">
+			<table>
+				<tr>
+					<td>Particle radius</td>
+					<td><input type="number" id="inputParticleRadius" value="6"/></td>
+					<td class="parameterHelpText">radius of particles in pixels</td>
+				</tr>
+				<tr>
+					<td>Best Particle radius</td>
+					<td><input type="number" id="inputBestParticleRadius" value="6"/></td>
+					<td class="parameterHelpText">radius of best particle in pixels</td>
+				</tr>
+				<tr>
+					<td>Best Minimum radius</td>
+					<td><input type="number" id="inputMinimumRadius" value="10"/></td>
+					<td class="parameterHelpText">radius of minimum in pixels</td>
+				</tr>
+				
+				<tr>
+					<td>
+						Display Dust
+					</td>
+					<td>
+						<input type="checkbox" id="inputDisplayDust" checked/>
+					</td>
+					<td class="parameterHelpText">display visited particle locations</td>
+				</tr>
+				<tr>
+					<td>
+						Display lbests
+					</td>
+					<td>
+						<input type="checkbox" id="inputDisplayLBests" checked/>
+					</td>
+					<td class="parameterHelpText" onchange="this.updateDisplayLBests()">display each particles' local best</td>
+				</tr>
+				<tr>
+					<td>LBest radius</td>
+					<td><input type="number" id="inputLBestRadius" value="8"/></td>
+					<td class="parameterHelpText">radius of lbest coordinates in pixels</td>
+				</tr>
+				<tr>
+					<td>Background dimension</td>
+					<td><input type="number" id="inputSampleGridSize" value="100"/></td>
+					<td class="parameterHelpText">Size of background sample grid</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div id="panelLegend" class="panel">
+		<center>
+			<ul style="list-style-type: none;">
+				<li><span style="color: red;">red</span> are particle current locations</li>
+				<li><span style="color: purple;">purple</span> are particle local best locations</li>
+				<li><span style="color: yellow;">yellow</span> is the best overall minimum found</li>
+				<li><span style="color: green;">green</span> is the particle that found the best minimum</li>
+			</ul>
+			</center>
+		</div>
+	</div> <!-- panel-tabs -->
+	
 		<svg id="plot" width="500" height="500" onclick="plot.toggleAnimation()"></svg>
 		<button id="toggleSimulationButton" class="inactive" onclick="toggleSimulation()"></button>
-	</div> <!-- pso_plot -->
-
-	<div class="plot_info">
-	<table>
-		<tr>
-			<td>Function</td>
-			<td>
-					<select id="inputFunction" onchange="startSimulation()">
-					  <option value="Salomon">Function: Salomon</option>
-					  <option value="Bohachevsky">Function: Bohachevsky</option>
-					  <option value="Griewank">Function: Griewank</option>
-					  <option value="Michaelwicz">Function: Michaelwicz</option>
-					  <option value="Image: Noise #1">Image: Noise #1</option>
-					  <option value="Image: Spiral">Image: Spiral</option>
-					</select>
-			</td>
-			<td class="parameterHelpText">the function to minimize</td>
-		</tr>
-		<tr>
-			<td>Topology</td>
-			<td>
-					<select id="inputTopology">
-					  <option value="Ring">Ring (local best)</option>
-					  <option value="Fully Connected">Fully Connected (global best)</option>
-					</select>
-			</td>
-			<td class="parameterHelpText">how the particles communicate</td>
-		</tr>
-		<tr>
-			<td># Neighbors</td>
-			<td><input type="number" id="inputNumNeighbors" value="2"/></td>
-			<td class="parameterHelpText">particle's peers<br/> (must be even #)</td>
-		</tr>
-		<tr>
-			<td># Particles</td>
-			<td><input type="number" id="inputNumParticles" value="50"/></td>
-			<td class="parameterHelpText"></td>
-		</tr>
-		<tr>
-          <td colspan="3"><hr/></td>
-    	</tr>
-		<tr>
-			<td>Inertial weight (Begin)</td>
-			<td><input type="number" id="inputInertiaWeightBegin" value="0.72984"/></td>
-			<td class="parameterHelpText">particle's perseverance</td>
-		</tr>
-		<tr>
-			<td>Inertial weight (End)</td>
-			<td><input type="number" id="inputInertiaWeightEnd" value="0.72984"/></td>
-			<td class="parameterHelpText">particle's perseverance</td>
-		</tr>
-		<tr>
-			<td>Inertial weight (Range)</td>
-			<td><input type="number" id="inputInertiaWeightIterationRange" value="1"/></td>
-			<td class="parameterHelpText">number of iterations to scale over</td>
-		</tr>
-		<tr>
-			<td>Social weight</td>
-			<td><input type="number" id="inputSocialWeight" value="1.496172"/></td>
-			<td class="parameterHelpText">particle's peer pressure</td>
-		</tr>
-		<tr>
-			<td>Cognitive weight</td>
-			<td><input type="number" id="inputCognitiveWeight" value="1.496172"/></td>
-			<td class="parameterHelpText">particle's independence</td>
-		</tr>
-		<tr>
-          <td colspan="3"><hr/></td>
-    	</tr>
-		<tr>
-			<td>Iterations per second</td>
-			<td><input type="number" id="inputIterationsPerSecond" value="20"/></td></tr>
-		<tr>
-			<td>Stopping condition</td>
-			<td>
-					<select id="inputStoppingCondition">
-					  <option value="none">Never</option>
-					  <option value="25">25 iterations</option>
-					  <option value="50">50 iterations</option>
-					  <option value="100">100 iterations</option>
-					  <option value="200">200 iterations</option>
-					  <option value="300">300 iterations</option>
-					  <option value="400">400 iterations</option>
-					  <option value="500" selected="selected">500 iterations</option>
-					</select>
-			</td>
-			<td style="text-align: right;">
-				(current iteration #<span id="outputNumIterations"></span>)
-			</td>
-		</tr>
-		<tr>
-			<td>Particle radius</td>
-			<td><input type="number" id="inputParticleRadius" value="6"/></td>
-			<td class="parameterHelpText">radius of particles in pixels</td>
-		</tr>
-		<tr>
-			<td>Best Particle radius</td>
-			<td><input type="number" id="inputBestParticleRadius" value="6"/></td>
-			<td class="parameterHelpText">radius of best particle in pixels</td>
-		</tr>
-		<tr>
-			<td>Best Minimum radius</td>
-			<td><input type="number" id="inputMinimumRadius" value="10"/></td>
-			<td class="parameterHelpText">radius of minimum in pixels</td>
-		</tr>
-		
-		<tr>
-			<td>
-				Display Dust
-			</td>
-			<td>
-				<input type="checkbox" id="inputDisplayDust" checked/>
-			</td>
-			<td class="parameterHelpText">display visited particle locations</td>
-		</tr>
-		<tr>
-			<td>
-				Display lbests
-			</td>
-			<td>
-				<input type="checkbox" id="inputDisplayLBests" checked/>
-			</td>
-			<td class="parameterHelpText">display each particles' local best</td>
-		</tr>
-		<tr>
-			<td>LBest radius</td>
-			<td><input type="number" id="inputLBestRadius" value="8"/></td>
-			<td class="parameterHelpText">radius of lbest coordinates in pixels</td>
-		</tr>
-		<tr>
-			<td>Background dimension</td>
-			<td><input type="number" id="inputSampleGridSize" value="100"/></td>
-			<td class="parameterHelpText">Size of background sample grid</td>
-		</tr>
-	</table>
+	</div> <!-- pso_plot -->	
 
 	<!-- this is hidden. required for getting pixel data from the canvas. -->
 	<canvas id="outputPlotImageCanvas" width="200" height="200" style="display: none;"> </canvas>
-	</div> <!-- plot_info -->
 </div> <!-- pso_simulation -->
 
 <div style="clear:both;"></div>
@@ -582,6 +606,75 @@ function startSimulation() {
 toggleSimulation();
 
 	
+</script>
+
+<script>
+	$(function() {
+		
+		$('.tab-panels .tabs li').on('click', function() {
+			// Get the particular tab-panel the 'tab' is part of
+			var panel = $(this).closest('.tab-panels');
+			
+			// The current 'active' tab (this can be null)
+			var activeTab = panel.find('.tabs li.active');
+			console.log("active tab = "); console.log(activeTab);
+			
+			// The current 'active' panel (this can be null)
+			var activePanel = panel.find('.panel.active');
+			console.log("active panel = "); console.log(activePanel);
+			
+			// The selected tab (this can NOT be null)
+			var selectedTab = $(this);
+			console.log("selected tab = ");
+			console.log(selectedTab);
+			
+			// The associated selected panel (this can NOT be null)
+			var panelToShowRel = $(this).attr('rel');
+			var panelToShow = $('#'+panelToShowRel);
+			console.log("panel to show = ");
+			console.log(panelToShow);
+
+			// The 'active' tab should go inactive (no matter what)
+			if (activeTab != []) {
+				activeTab.removeClass("active");
+			} else {
+				// no tab to remove 'active' from
+			}
+			
+			// If the selected tab is not the active tab, then make it active
+			if (!(selectedTab.is(activeTab))) {
+				selectedTab.addClass("active");
+			} else {
+				// the active tab was clicked on, so no other
+				// active tab to highlight
+			}
+			
+			// If the active tab was selected, no panels should be open
+			if (selectedTab.is(activeTab)) {
+				// If the active panel exists, close it
+				if (activePanel != []) {
+					activePanel.hide();
+					activePanel.removeClass("active");
+				} else {
+					// there is no active panel to hide
+				}
+			} else {
+				if (activePanel != []) {
+					console.log("sliding up pane");
+
+					activePanel.hide();
+					activePanel.removeClass('active');
+					panelToShow.show();
+					panelToShow.addClass('active');
+				} else {
+					console.log("sliding down pane");
+					panelToShow.show();
+					panelToShow.addClass("active");
+				}
+			}
+		});
+	
+	});
 </script>
 
 </body>

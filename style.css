@@ -1,16 +1,16 @@
 body {
+	text-align: center;
     font-family: 'Pontano Sans', Verdana, Helvetica, Arial;
-	margin:0;
-	padding:0;
+	margin-left: auto;
+	margin-right: auto;
 	background-color: #D1E0FF;
 	background-image: url("http://i.imgur.com/A2rqm.png");
 }
 
 svg {
-	outline: black solid thick;
+	outline: black solid thin;
 	margin-left: auto;
 	margin-right: auto;
-	float: right;
 	background-color: pink;
 }
 
@@ -18,23 +18,17 @@ svg {
 div.pso_simulation {
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: auto;
-	margin-bottom: auto;
-	text-align: center;
 	vertical-align: middle;
 }
 
 /* The D3 plot size is 500x500 */
 div.pso_plot {
-	width: 525px;
+	width: 600px;
 	height: 600px;
 	background-color: transparent;
 	display: inline-block;
-	float: left;
 	margin-left: auto;
 	margin-right: auto;
-	vertical-align: middle;
-	text-align: middle;
 }
 
 /* PSO setting panel */
@@ -43,9 +37,7 @@ div.plot_info {
 	display: inline-block;
 	margin-left: auto;
 	margin-right: auto;
-	text-align: justify;
-	vertical-align: middle;
-	min-width: 525px;
+	min-width: 600px;
 }
 
 /* The information text for each parameter. */
@@ -84,13 +76,6 @@ td {
 .subtitle {
 	text-transform: uppercase;
 }
-
-/*button {
-	width: 400px;
-	height: 50px;
-	text-transform: uppercase;
-	font-weight: bold;
-}*/
 
 #toggleSimulationButton.inactive {
 	/* green */
@@ -221,3 +206,62 @@ a {
 	fill: #CCCC00;
 	opacity: 0.8;
 }
+
+
+		.tab-panels {
+			text-align: center;
+		}
+
+		.tab-panels ul {
+			margin: 0;
+			padding: 0;
+		}
+		
+		.tab-panels ul li {
+			list-style-type: none;
+			cursor: pointer;
+			margin: 0;
+			padding: 3px 10px;
+			display: inline-block;
+			background: #222;
+			font-weight: normal;
+			color: gray;
+			border-color: block;
+			border-style: solid;
+			border-width: thin;
+			border-radius: 10px 10px 0 0;
+			text-transform: uppercase;
+			font-family: "Arial", sans-serif;
+		}
+
+		.tab-panels ul li:hover {
+			color: gray;
+			background: yellow;
+		}
+		
+		.tab-panels ul li.active {
+			background: red;
+			font-weight: bold;
+			color: white;
+		}
+
+		.tab-panels .panel {
+			position: absolute;
+			padding: 30px;
+			background-color: #ddd;
+			border-collapse: separate;
+			border-spacing: 0 0;
+			padding: 0.5em;
+			border-color: black;
+			border-style: solid;
+			border-width: thick;
+			border-radius: 0px 0px 10px 10px;
+			font-family: "Arial", sans-serif;
+			font-size: 1em;
+			display: none;
+		}
+
+		.tab-panels .panel.active {
+			display: block;
+		}
+		
