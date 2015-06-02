@@ -246,14 +246,19 @@
 
 		
 <script>
+	"use strict"
 	var numIterations = 0;
 	var maxIterations = Infinity;
 	
 	// default value
-	this.simulationIsRunning = false;
+	var simulationIsRunning = false;
+
+	var plot = undefined;
+	var manager = undefined;
+	var ff = undefined;
 	
 	function toggleSimulation() {
-		if (!this.simulationIsRunning) {
+		if (!simulationIsRunning) {
 			startSimulation();
 		} else {
 			stopSimulation();
@@ -261,8 +266,8 @@
 	}
 	
 	function stopSimulation() {
-		this.simulationIsRunning = false;
-		this.plot.stopAnimation = true;
+		simulationIsRunning = false;
+		plot.stopAnimation = true;
 		document.getElementById("toggleSimulationButton").innerHTML = "Start Simulation";
 		document.getElementById("toggleSimulationButton").className = "inactive";
 	}
@@ -275,8 +280,8 @@
 	
 	// This is called every iteration of the PSO algorithm
 	function iterationCallback (manager) {
-		var x = scale(manager.bestPosition[0], this.ff.dimensions[0]);
-		var y = scale(manager.bestPosition[1], this.ff.dimensions[1]);
+		var x = scale(manager.bestPosition[0], ff.dimensions[0]);
+		var y = scale(manager.bestPosition[1], ff.dimensions[1]);
 		
 		document.getElementById("outputBestPosition").innerHTML
 			= "( " + x.toFixed(3) + ", " + y.toFixed(3) + " )";
@@ -323,8 +328,8 @@
 	*/
 function startSimulation() {
 	// Check if any current simulation is running. If so, end it.
-	if (typeof this.plot !== 'undefined') {
-		this.plot.stopAnimation = true;
+	if (typeof plot !== 'undefined') {
+		plot.stopAnimation = true;
 	}
 	
 	document.getElementById("toggleSimulationButton").className = "active";
@@ -486,22 +491,22 @@ function startSimulation() {
 	// Load the user chosen fitness function
 	switch (document.getElementById("inputFunction").value) {
 		case "Salomon":
-			this.ff = new FF_Salomon;
+			ff = new FF_Salomon;
 			break;
 		case "Bohachevsky": 
-  			this.ff = new FF_Bohachevsky;
+  			ff = new FF_Bohachevsky;
   			break;
 		case "Griewank":
-			this.ff = new FF_Griewank;
+			ff = new FF_Griewank;
 			break;
 		case "Michaelwicz":
-			this.ff = new FF_Michaelwicz;
+			ff = new FF_Michaelwicz;
 			break;
 		case "Image: Noise #1":
-			this.ff = new FF_Image("http://www.revisemri.com/tools/kspace/images/k_randnoise.jpg");
+			ff = new FF_Image("http://www.revisemri.com/tools/kspace/images/k_randnoise.jpg");
 			break;
 		case "Image: Spiral":
-			this.ff = new FF_Image("http://www.gifwave.com/media/102045_art-processing-adam-ferriss-p5-ellipse_200s.gif");
+			ff = new FF_Image("http://www.gifwave.com/media/102045_art-processing-adam-ferriss-p5-ellipse_200s.gif");
 			break;
 		default:
 			console.assert(false);
@@ -520,86 +525,85 @@ function startSimulation() {
 	var numParticles = parseFloat(document.getElementById("inputNumParticles").value);
 	
 	// Create the main PSO computation object
-	this.manager = new PSO.Manager( this.ff, numParticles );
-	this.manager.setInertiaScaling(true, 
+	manager = new PSO.Manager( ff, numParticles );
+	manager.setInertiaScaling(true, 
 		parseFloat(document.getElementById("inputInertiaWeightBegin").value),
 		parseFloat(document.getElementById("inputInertiaWeightEnd").value),
 		parseFloat(document.getElementById("inputInertiaWeightIterationRange").value) );
 	//this.manager.inertiaWeight = parseFloat(document.getElementById("inputInertiaWeight").value);
-	this.manager.socialWeight = parseFloat(document.getElementById("inputSocialWeight").value);
-	this.manager.cognitiveWeight = parseFloat(document.getElementById("inputCognitiveWeight").value);
+	manager.socialWeight = parseFloat(document.getElementById("inputSocialWeight").value);
+	manager.cognitiveWeight = parseFloat(document.getElementById("inputCognitiveWeight").value);
 	
 	switch (document.getElementById("inputTopology").value) {
 		case "Ring":
-			this.manager.topology = "ring";
-			this.manager.numNeighbors = parseFloat(document.getElementById("inputNumNeighbors").value);
+			manager.topology = "ring";
+			manager.numNeighbors = parseFloat(document.getElementById("inputNumNeighbors").value);
 			break;
 		case "Fully Connected":
 			// this should be the manger's default (but set it to be sure)
-			this.manager.topology = "fully connected";
-			this.manager.numNeighbors = parseFloat(this.manager.particles.length);
+			manager.topology = "fully connected";
+			manager.numNeighbors = parseFloat(this.manager.particles.length);
 			break;
 		default:
 			console.assert(false);
 	}
 	
 	// Create the PSO plot animator object
-	this.plot = new PSOPlot (manager, "plot");
-	this.plot.normalParticleRadius = parseFloat(document.getElementById("inputParticleRadius").value);
-	this.plot.bestParticleRadius = parseFloat(document.getElementById("inputBestParticleRadius").value);
-	this.plot.bestMinimumRadius = parseFloat(document.getElementById("inputMinimumRadius").value);
-	this.plot.sampleNumSize = parseFloat(document.getElementById("inputSampleGridSize").value);
-	this.plot.tickCallbackCallback = iterationCallback.bind(this);
-	this.plot.iterationsPerSecond = ips;
+	plot = new PSOPlot (manager, "plot");
+	plot.normalParticleRadius = parseFloat(document.getElementById("inputParticleRadius").value);
+	plot.bestParticleRadius = parseFloat(document.getElementById("inputBestParticleRadius").value);
+	plot.bestMinimumRadius = parseFloat(document.getElementById("inputMinimumRadius").value);
+	plot.sampleNumSize = parseFloat(document.getElementById("inputSampleGridSize").value);
+	plot.tickCallbackCallback = iterationCallback.bind(this);
+	plot.iterationsPerSecond = ips;
 	if (document.getElementById("inputDisplayDust").checked) {
-		this.plot.featureDisplayDustEnabled = true;
+		plot.featureDisplayDustEnabled = true;
 	} else {
-		this.plot.featureDisplayDustEnabled = false;
+		plot.featureDisplayDustEnabled = false;
 	}
 	
 	if (document.getElementById("inputDisplayLBests").checked) {
-		this.plot.featureDisplayLBests = true;
+		plot.featureDisplayLBests = true;
 	} else {
-		this.plot.featureDisplayLBests = false;
+		plot.featureDisplayLBests = false;
 	}
-	this.plot.lbestRadius = parseFloat(document.getElementById("inputLBestRadius").value);
+	plot.lbestRadius = parseFloat(document.getElementById("inputLBestRadius").value);
 	
-	this.plot.featureDisplayDust
-	this.plot.startAnimation();
+	plot.startAnimation();
 	
 	// Set the animation and computation stopping condition
 	switch (document.getElementById("inputStoppingCondition").value) 
 	{
 		case "none":
-			this.maxIterations = Infinity;
+			maxIterations = Infinity;
 			break;
 		case "25":
-			this.maxIterations = 25;
+			maxIterations = 25;
 			break;
 		case "50":
-			this.maxIterations = 50;
+			maxIterations = 50;
 			break;
 		case "100":
-			this.maxIterations = 100;
+			maxIterations = 100;
 			break;
 		case "200":
-			this.maxIterations = 200;
+			maxIterations = 200;
 			break;
 		case "300":
-			this.maxIterations = 300;
+			maxIterations = 300;
 			break;
 		case "400":
-			this.maxIterations = 400;
+			maxIterations = 400;
 			break;
 		case "500":
-			this.maxIterations = 500;
+			maxIterations = 500;
 			break;
 		default:
 			console.log("Invalid stopping condition.");
 		 	console.assert(true);
 	}
 	
-	this.simulationIsRunning = true;
+	simulationIsRunning = true;
 	document.getElementById("toggleSimulationButton").innerHTML = "Stop Simulation";
 }
 
@@ -609,6 +613,7 @@ toggleSimulation();
 </script>
 
 <script>
+	"use strict"
 	$(function() {
 		
 		$('.tab-panels .tabs li').on('click', function() {
