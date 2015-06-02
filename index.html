@@ -612,30 +612,30 @@ toggleSimulation();
 	$(function() {
 		
 		$('.tab-panels .tabs li').on('click', function() {
+			// Time to open a panel
+			var panelOpenSpeedMs = 250;
+
+			// Time to close a panel
+			var panelCloseSpeedMs = 250;
+
 			// Get the particular tab-panel the 'tab' is part of
 			var panel = $(this).closest('.tab-panels');
 			
 			// The current 'active' tab (this can be null)
 			var activeTab = panel.find('.tabs li.active');
-			console.log("active tab = "); console.log(activeTab);
 			
 			// The current 'active' panel (this can be null)
 			var activePanel = panel.find('.panel.active');
-			console.log("active panel = "); console.log(activePanel);
 			
 			// The selected tab (this can NOT be null)
 			var selectedTab = $(this);
-			console.log("selected tab = ");
-			console.log(selectedTab);
 			
 			// The associated selected panel (this can NOT be null)
 			var panelToShowRel = $(this).attr('rel');
 			var panelToShow = $('#'+panelToShowRel);
-			console.log("panel to show = ");
-			console.log(panelToShow);
 
 			// The 'active' tab should go inactive (no matter what)
-			if (activeTab != []) {
+			if (activeTab.length) {
 				activeTab.removeClass("active");
 			} else {
 				// no tab to remove 'active' from
@@ -652,24 +652,27 @@ toggleSimulation();
 			// If the active tab was selected, no panels should be open
 			if (selectedTab.is(activeTab)) {
 				// If the active panel exists, close it
-				if (activePanel != []) {
-					activePanel.hide();
-					activePanel.removeClass("active");
+				if (activePanel.length) {
+					activePanel.slideUp(panelCloseSpeedMs, function() {
+						activePanel.removeClass("active");
+					});
 				} else {
 					// there is no active panel to hide
 				}
 			} else {
-				if (activePanel != []) {
-					console.log("sliding up pane");
-
-					activePanel.hide();
-					activePanel.removeClass('active');
-					panelToShow.show();
-					panelToShow.addClass('active');
+				if (activePanel.length) {
+					// A panel is already open, so close it, then open the new one.
+					activePanel.slideUp(panelCloseSpeedMs, function() {
+						activePanel.removeClass('active');
+						panelToShow.slideDown(panelOpenSpeedMs, function() {
+							panelToShow.addClass('active');
+						});
+					});
 				} else {
-					console.log("sliding down pane");
-					panelToShow.show();
-					panelToShow.addClass("active");
+					// No panel is open, so just open the new one
+					panelToShow.slideDown(panelOpenSpeedMs, function() {
+						panelToShow.addClass("active");
+					});
 				}
 			}
 		});
