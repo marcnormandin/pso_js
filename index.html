@@ -123,13 +123,13 @@
 					<td>
 							<select id="inputStoppingCondition">
 							  <option value="none">Never</option>
-							  <option value="25">25 iterations</option>
+							  <option value="25" selected="selected">25 iterations</option>
 							  <option value="50">50 iterations</option>
 							  <option value="100">100 iterations</option>
 							  <option value="200">200 iterations</option>
 							  <option value="300">300 iterations</option>
 							  <option value="400">400 iterations</option>
-							  <option value="500" selected="selected">500 iterations</option>
+							  <option value="500">500 iterations</option>
 							</select>
 					</td>
 					<td style="text-align: right;">
@@ -542,7 +542,7 @@ function startSimulation() {
 		case "Fully Connected":
 			// this should be the manger's default (but set it to be sure)
 			manager.topology = "fully connected";
-			manager.numNeighbors = parseFloat(this.manager.particles.length);
+			manager.numNeighbors = parseFloat(manager.particles.length);
 			break;
 		default:
 			console.assert(false);
