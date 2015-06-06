@@ -1,7 +1,10 @@
+"use strict"
+
 // pso.js
 
 // Namespace
 PSO = (function () {
+	
 
 	// Returns a random number in [min, max)
 	function random(min, max) {

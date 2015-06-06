@@ -1,4 +1,5 @@
 "use strict"
+
 var numIterations = 0;
 var maxIterations = Infinity;
 

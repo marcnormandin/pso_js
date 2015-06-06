@@ -1,4 +1,7 @@
+"use strict"
+
 // PSOPlot class
+
 function PSOPlot (manager, idTag) 
 {
 	this.manager = manager;
