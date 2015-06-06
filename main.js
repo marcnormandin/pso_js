@@ -222,7 +222,7 @@ function loadFittingFunction() {
 	};
 
 	// Load the user chosen fitness function
-	switch (window.localStorage["inputFunction"]) {
+	switch ( document.getElementById("inputFunction").value )  {
 		case "Salomon":
 			ff = new FF_Salomon;
 			break;
@@ -440,12 +440,85 @@ $(function() {
 
 });
 
-function loadDefaultSettings () {
-	window.localStorage["inputFunction"] = "Salomon";
+function setSelectedValue(selectObj, valueToSet) {
+    for (var i = 0; i < selectObj.options.length; i++) {
+        if (selectObj.options[i].value == valueToSet) {
+            selectObj.options[i].selected = true;
+            return;
+        }
+    }
+}
+
+function getSelectedValue(selectObj) {
+    for (var i = 0; i < selectObj.options.length; i++) {
+        if (selectObj.options[i].selected == true) {
+            return selectObj.options[i].value;
+        }
+    }
+
+    console.assert('error getting dropdown box value');
 }
 
 function saveSettings () {
-	window.localStorage["inputFunction"] = document.getElementById("inputFunction").value;
+	if (typeof(Storage) === 'undefined') {
+		alert('unable to save settings');
+	}
+	
+	// This is costly
+	// Input boxes, checkboxes
+	var x = document.getElementsByTagName("input");
+	for (var cnt = 0; cnt < x.length; cnt++) {
+    	switch (x[cnt].type) {
+    		case 'number':
+    			window.localStorage.setItem( x[cnt].id, x[cnt].value );
+    			break;
+    		case 'checkbox':
+    			window.localStorage.setItem( x[cnt].id, x[cnt].checked );
+    			break;
+    	}
+	}
+
+	// dropdown boxes
+	x = document.getElementsByTagName("select");
+	for (var cnt = 0; cnt < x.length; cnt++) {
+		var id = x[cnt].id;
+		window.localStorage.setItem( x[cnt].id, getSelectedValue( x[cnt] ) );
+	}
+}
+
+function loadSavedSettingsIntoMenu () {
+	if (typeof(Storage) === 'undefined') {
+		alert('unable to save settings');
+	}
+	
+	// Input boxes, checkboxes
+	// FIX: This searches the entire DOM
+	var x = document.getElementsByTagName("input");
+	for (var cnt = 0; cnt < x.length; cnt++) {
+		// if we have a saved value, then restore it
+		if (window.localStorage.getItem( x[cnt].id ) !== null) {
+	    	switch (x[cnt].type) {
+	    		case 'number':
+	    			document.getElementById( x[cnt].id ).value = window.localStorage.getItem( x[cnt].id );
+	    			break;
+	    		case 'checkbox':
+	    			document.getElementById( x[cnt].id ).checked = JSON.parse(window.localStorage.getItem( x[cnt].id ) );
+	    			break;
+	    		default:
+	    			alert('Attempted to load strange input object.');
+	    	}
+	    }
+	}
+
+	// dropdown boxes
+	// FIX: This searches the entire DOM
+	x = document.getElementsByTagName("select");
+	for (var cnt = 0; cnt < x.length; cnt++) {
+		// if we have a saved value, then restore it
+		if (window.localStorage.getItem( x[cnt].id ) !== null) {
+			setSelectedValue( document.getElementById( x[cnt].id ), window.localStorage.getItem( x[cnt].id ) );
+		}
+	}
 }
 
 function handle_storage( e ) {
@@ -455,11 +528,12 @@ function handle_storage( e ) {
 window.addEventListener("storage", handle_storage, false);
 
 if (typeof(Storage) !== 'undefined') {
-	alert('Using HTML5 localStorage!');
-}
-
-if (!window.localStorage["inputFunction"]) {
-	loadDefaultSettings();
+	// If settings are saved, then load them.
+	// Use the fitting function as a canary (dunno what the term is)
+	//if (window.localStorage.getItem("inputFunction") !== null) {
+		//console.log(window.localStorage.getItem("inputFunction"));
+		loadSavedSettingsIntoMenu();
+	//}
 }
 
 toggleSimulation();
