@@ -26,7 +26,6 @@ div.pso_simulation {
 div.pso_plot {
 	width: 100%;
 	background-color: transparent;
-	display: inline-block;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -34,7 +33,6 @@ div.pso_plot {
 /* PSO setting panel */
 div.plot_info {
 	background-color: transparent;
-	display: inline-block;
 	margin-left: auto;
 	margin-right: auto;
 	min-width: 600px;
@@ -224,6 +222,7 @@ a {
 			display: inline-block;
 			background: #222;
 			font-weight: normal;
+			font-size: 1.1em;
 			color: gray;
 			border-color: block;
 			border-style: solid;
