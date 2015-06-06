@@ -19,12 +19,12 @@ div.pso_simulation {
 	margin-left: auto;
 	margin-right: auto;
 	vertical-align: middle;
+	text-align: center;
 }
 
 /* The D3 plot size is 500x500 */
 div.pso_plot {
-	width: 600px;
-	height: 600px;
+	width: 100%;
 	background-color: transparent;
 	display: inline-block;
 	margin-left: auto;
@@ -48,20 +48,17 @@ div.plot_info {
 
 
 #outputPlotImageContour, #outputPlotImageThreeD {
-	width: 90%;
+	width: 95%;
 }
 
 p {
-	text-transform: uppercase;
+	font-family: 'Pontano Sans', Verdana, Helvetica, Arial;
+	text-transform: lowercase;
+	color: white;
 }
 
 span {
 	font-size: 1.5em;
-}
-
-img#outputPlotImage {
-	width: 200px;
-	height: 200px;
 }
 
 
@@ -75,6 +72,8 @@ td {
 
 .subtitle {
 	text-transform: uppercase;
+	color: red;
+	background-color: #222;
 }
 
 #toggleSimulationButton.inactive {

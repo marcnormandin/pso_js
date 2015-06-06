@@ -193,8 +193,8 @@
 		</div>
 	</div> <!-- panel-tabs -->
 	
-		<svg id="plot" onclick="plot.toggleAnimation()"></svg>
-		<button id="toggleSimulationButton" class="inactive" onclick="toggleSimulation()"></button>
+	<svg id="plot" onclick="plot.toggleAnimation()"></svg>
+	<button id="toggleSimulationButton" class="inactive" onclick="toggleSimulation()"></button>
 	</div> <!-- pso_plot -->	
 
 	<!-- this is hidden. required for getting pixel data from the canvas. -->
@@ -207,28 +207,16 @@
 
 
 <center>
-<p>The best position found is: <span id="outputBestPosition"></span></p>
-<p>The true global minimum is: <span id="outputTruePosition"></span></p>
+<p>estimated minimum: <span id="outputBestPosition"></span></p>
+<p>true minimum: <span id="outputTruePosition"></span></p>
+<hr/>
 </center>		
 
 <center>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<hr/>
-
 <h3 class="subtitle">A three-dimensional plot of the function being minimized</h3>
 <img id="outputPlotImageThreeD"/>
-
 <hr/>
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
 <h3 class="subtitle">A two-dimensional contour plot of the function being minimized</h3>
 <img id="outputPlotImageContour"/>
 </center>

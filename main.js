@@ -526,6 +526,21 @@ function handle_storage( e ) {
 	console.log("localStorage changed");
 }
 
+
+function resizeHandler () {
+	var w = 0.9 * parseFloat($(window).width());
+	var h = 0.9 * parseFloat($(window).height());
+
+	// Make the SVG a square of the minimum of {width, height}.
+	if (h < w) {
+		document.getElementById('plot').setAttribute('width', h);
+		document.getElementById('plot').setAttribute('height', h);
+	} else {
+		document.getElementById('plot').setAttribute('width', w);
+		document.getElementById('plot').setAttribute('height', w);
+	}
+}
+
 window.addEventListener("storage", handle_storage, false);
 
 if (typeof(Storage) !== 'undefined') {
@@ -536,6 +551,9 @@ if (typeof(Storage) !== 'undefined') {
 		loadSavedSettingsIntoMenu();
 	//}
 }
+
+$(window).resize( resizeHandler );
+resizeHandler();
 
 toggleSimulation();
 
