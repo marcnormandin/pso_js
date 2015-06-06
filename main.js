@@ -9,6 +9,8 @@ var plot = undefined;
 var manager = undefined;
 var ff = undefined;
 
+var settingsChanged = true;
+
 function toggleSimulation() {
 	if (!simulationIsRunning) {
 		startSimulation();
@@ -220,7 +222,7 @@ function loadFittingFunction() {
 	};
 
 	// Load the user chosen fitness function
-	switch (document.getElementById("inputFunction").value) {
+	switch (window.localStorage["inputFunction"]) {
 		case "Salomon":
 			ff = new FF_Salomon;
 			break;
@@ -341,6 +343,8 @@ function loadAnimator() {
 	as well as a new PSO plot animation object.
 */
 function startSimulation() {
+	saveSettings();
+
 	// Check if any current simulation is running. If so, end it.
 	if (typeof plot !== 'undefined') {
 		plot.stopAnimation = true;
@@ -365,6 +369,7 @@ function startSimulation() {
 	}
 }
 
+// This manages the menu system
 $(function() {
 	
 	$('.tab-panels .tabs li').on('click', function() {
@@ -435,11 +440,27 @@ $(function() {
 
 });
 
+function loadDefaultSettings () {
+	window.localStorage["inputFunction"] = "Salomon";
+}
+
+function saveSettings () {
+	window.localStorage["inputFunction"] = document.getElementById("inputFunction").value;
+}
+
 function handle_storage( e ) {
-	console.log("localstorage changed");
+	console.log("localStorage changed");
 }
 
 window.addEventListener("storage", handle_storage, false);
+
+if (typeof(Storage) !== 'undefined') {
+	alert('Using HTML5 localStorage!');
+}
+
+if (!window.localStorage["inputFunction"]) {
+	loadDefaultSettings();
+}
 
 toggleSimulation();
 
