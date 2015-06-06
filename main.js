@@ -57,7 +57,7 @@ function iterationCallback (manager) {
 function displayContour (name) {
 	// Display the contour if one is present
 	if (name != "") {
-		document.getElementById("outputPlotImageContour").style.display = "initial";
+		//document.getElementById("outputPlotImageContour").style.display = "initial";
 		document.getElementById("outputPlotImageContour").setAttribute("src", name);
 	} else {
 		document.getElementById("outputPlotImageContour").style.display = "none";
@@ -66,7 +66,7 @@ function displayContour (name) {
 
 function displayThreeD (name) {
 	if (name != "") {
-		document.getElementById("outputPlotImageThreeD").style.display = "initial";
+		//document.getElementById("outputPlotImageThreeD").style.display = "initial";
 		document.getElementById("outputPlotImageThreeD").setAttribute("src", name);
 	} else {
 		document.getElementById("outputPlotImageThreeD").style.display = "none";
@@ -528,32 +528,42 @@ function handle_storage( e ) {
 
 
 function resizeHandler () {
-	var w = 0.9 * parseFloat($(window).width());
-	var h = 0.9 * parseFloat($(window).height());
+	var w = Math.floor( 0.9 * parseFloat( $(window).width() ) );
+	var h = Math.floor( 0.9 * parseFloat( $(window).height() ) );
 
 	// Make the SVG a square of the minimum of {width, height}.
 	if (h < w) {
 		document.getElementById('plot').setAttribute('width', h);
 		document.getElementById('plot').setAttribute('height', h);
+
+		document.getElementById('outputPlotImageThreeD').style.height = h + "px";
+		document.getElementById('outputPlotImageContour').style.height = h + "px";
 	} else {
 		document.getElementById('plot').setAttribute('width', w);
 		document.getElementById('plot').setAttribute('height', w);
+
+		document.getElementById('outputPlotImageThreeD').style.width = w + "px";
+
+		document.getElementById('outputPlotImageContour').style.width = w + "px";
 	}
+
+	console.log(document.getElementById('outputPlotImageThreeD').style.minWidth);
 }
 
-window.addEventListener("storage", handle_storage, false);
+// Start running the scripts
+$(function() {
 
-if (typeof(Storage) !== 'undefined') {
-	// If settings are saved, then load them.
-	// Use the fitting function as a canary (dunno what the term is)
-	//if (window.localStorage.getItem("inputFunction") !== null) {
-		//console.log(window.localStorage.getItem("inputFunction"));
+	if (typeof(Storage) !== 'undefined') {
+		window.addEventListener("storage", handle_storage, false);
+
 		loadSavedSettingsIntoMenu();
-	//}
-}
+	}
 
-$(window).resize( resizeHandler );
-resizeHandler();
+	$(window).resize( resizeHandler );
+	resizeHandler();
 
-toggleSimulation();
+	toggleSimulation();
+});
+
+
 
