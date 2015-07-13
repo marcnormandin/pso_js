@@ -4,7 +4,7 @@
 
 ## What is Particle Swarm Optimization?
 
-This is a javascript implementation of the **Particle Swarm Optimization** (PSO) algorithm originally attributed to Kennedy and Eberhart in 1995, and later to Shi and Eberhart in 1998.
+This is a javascript implementation of the **Particle Swarm Optimization** (PSO) algorithm attributed to Kennedy and Eberhart in 1995, and later to Shi and Eberhart in 1998.
 
 PSO is a computational search algorithm whose purpose is to find the coordinates of global minimum in a multi-dimensional search space. A major benefit of the algorithm is that the function whose global minimum is to be found is not required to be differentiable or smooth. In addition, the PSO control parameters are few in number, and their respective qualitative effects on the search are simple to understand.
 
