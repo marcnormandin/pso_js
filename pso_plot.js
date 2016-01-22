@@ -217,24 +217,6 @@ PSOPlot.prototype.renderParticles = function() {
 				(function(psoplot, manager) {
 						return function(particle) 
 								{
-									if (psoplot.featureDisplayDustEnabled == true) {
-										var i = Math.floor(scaleX(particle.position[0]) / psoplot.Rwpixel);
-										var j = Math.floor(scaleY(particle.position[1]) / psoplot.Rhpixel);
-										var c = i*psoplot.sampleNumPerHeight + j;
-										
-										// Not all particles will be within the domain, so some
-										// can not be rendered.
-										if ( (c >= 0) && (c < psoplot.fitnessFunctionSamples.length)) {
-											console.assert(c < psoplot.fitnessFunctionSamples.length);
-											// Only add the particle to the dust array if it has
-											// not previously been added.
-											if (psoplot.fitnessFunctionSamples[c]["visited"] == false) {
-												psoplot.fitnessFunctionSamples[c]["visited"] = true;
-												psoplot.dustSampleIndices.push( c );
-											}
-										}
-									}
-									
 									if (particle.bestFitness == manager.bestFitness) {
 										return "bestParticle";
 									} else {
