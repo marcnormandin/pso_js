@@ -291,6 +291,12 @@ function loadAnimator() {
 		plot.featureDisplayDustEnabled = false;
 	}
 
+	if (document.getElementById("inputDisplayParticles").checked) {
+		plot.featureDisplayParticles = true;
+	} else {
+		plot.featureDisplayParticles = false;
+	}
+
 	if (document.getElementById("inputDisplayLBests").checked) {
 		plot.featureDisplayLBests = true;
 	} else {

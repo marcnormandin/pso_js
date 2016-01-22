@@ -44,6 +44,7 @@ function PSOPlot (manager, idTag)
 	
 	this.featureDisplayDustEnabled = true;
 	this.featureDisplayLBests = false;
+	this.featureDisplayParticles = true;
 	this.lbestRadius = 4;
 	
 	this.dustSampleIndices = [];
@@ -131,7 +132,9 @@ PSOPlot.prototype.tickCallback = function (elapsedTime) {
 				this.renderDust();
 			}
 			
-			this.renderParticles();
+			if (this.featureDisplayParticles == true) {
+				this.renderParticles();
+			}
 			
 			if (this.featureDisplayLBests == true) {
 				this.renderLBests();
@@ -302,6 +305,28 @@ PSOPlot.prototype.renderDust = function() {
 		.domain(d3.extent(this.fitnessFunctionSamples, function(s) { return s["value"]; }))
 		.range([255, 0]);
     
+    // Update the dust
+	this.manager.particles.forEach(
+		function(particle) 
+		{
+			var i = Math.floor(scaleX(particle.position[0]) / this.Rwpixel);
+			var j = Math.floor(scaleY(particle.position[1]) / this.Rhpixel);
+			var c = i*this.sampleNumPerHeight + j;
+			
+			// Not all particles will be within the domain, so some
+			// can not be rendered.
+			if ( (c >= 0) && (c < this.fitnessFunctionSamples.length)) {
+				console.assert(c < this.fitnessFunctionSamples.length);
+				// Only add the particle to the dust array if it has
+				// not previously been added.
+				if (this.fitnessFunctionSamples[c]["visited"] == false) {
+					this.fitnessFunctionSamples[c]["visited"] = true;
+					this.dustSampleIndices.push( c );
+				}
+			}
+		}, 
+	this);
+
 	// Bind the data
 	var rects = this.gBackground.selectAll("rect").data(this.dustSampleIndices);
 	
